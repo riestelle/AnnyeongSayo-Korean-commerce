@@ -1,6 +1,6 @@
 # Database configuration (IMPORTANT: Protects credentials)
-connect.php
-config.php
+includes/connect.php
+includes/config.php
 
 # Operating System files
 .DS_Store

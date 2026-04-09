@@ -1,0 +1,15 @@
+# Database configuration (IMPORTANT: Protects credentials)
+connect.php
+config.php
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+
+# Environment files
+.env

@@ -15,13 +15,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = mysqli_query($con, $checkUser);
 
     if (mysqli_num_rows($result) > 0) {
-        header("Location: ../register.php?error=taken");
+        header("Location: ../login_register.php?form=register&error=taken");
     } else {
         // 3. ACTION: Insert into the korean_store database
         $sql = "INSERT INTO users (username, password, role) VALUES ('$username', '$hashed_password', '$role')";
         
         if (mysqli_query($con, $sql)) {
-            header("Location: ../login.php?success=registered");
+            header("Location: ../login_register.php?form=login&success=registered");
         } else {
             echo "Error: " . mysqli_error($con);
         }

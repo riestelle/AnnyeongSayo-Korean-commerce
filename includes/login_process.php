@@ -29,10 +29,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             exit();
         } else {
-            header("Location: ../login.php?error=invalid_password");
+            header("Location: ../login_register.php?form=login&error=invalid_password");
         }
     } else {
-        header("Location: ../login.php?error=user_not_found");
+        header("Location: ../login_register.php?form=login&error=user_not_found");
     }
 }
 ?>

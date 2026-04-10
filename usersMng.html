@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Users Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --primary:                #b70048;
+    --on-primary:             #ffeff0;
+    --primary-container:      #ff7290;
+    --on-primary-container:   #4d001a;
+    --secondary:              #006668;
+    --on-secondary:           #c0feff;
+    --secondary-container:    #52f9fc;
+    --on-secondary-container: #005b5d;
+    --secondary-fixed:        #52f9fc;
+    --on-secondary-fixed:     #004749;
+    --tertiary:               #6c5a00;
+    --tertiary-container:     #fdd828;
+    --on-tertiary-container:  #5b4c00;
+    --background:             #f5f6f7;
+    --on-background:          #2c2f30;
+    --surface:                #f5f6f7;
+    --surface-container:      #e6e8ea;
+    --surface-container-low:  #eff1f2;
+    --surface-container-lowest: #ffffff;
+    --surface-container-highest: #dadddf;
+    --on-surface:             #2c2f30;
+    --outline:                #757778;
+    --black: #000000;
+  }
+
+  body {
+    background: var(--background);
+    color: var(--on-background);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── Material Icons ── */
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-size: 24px;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
+    user-select: none;
+  }
+
+  /* ── Halftone & Comic ── */
+  .halftone-cyan {
+    background-image: radial-gradient(circle, #006668 2px, transparent 2px);
+    background-size: 6px 6px;
+    opacity: 0.2;
+  }
+  .comic-stroke {
+    -webkit-text-stroke: 1px #000000;
+  }
+
+  /* ── Header ── */
+  /* ── Header ── */
+header {
+  background: #ffffff;
+  width: 100%;
+  border-bottom: 4px solid #000000;
+  position: relative;
+  z-index: 50;
+}
+
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 1rem 2.5rem;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.logo {
+  font-family: 'Epilogue', serif;
+  font-size: 1.875rem;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.05em;
+  color: #000000;
+  text-shadow: 4px 4px 0px #fdd828;
+  text-decoration: none;
+  text-transform: none; /* Set to none as requested for webname */
+  flex-shrink: 0;
+}
+
+.header-right-group {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.header-left-group {
+  display: flex;
+  align-items: baseline; 
+  gap: 3rem;
+}
+
+nav {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  background: transparent !important; /* Overrides old nav background */
+  border: none !important; /* Overrides old nav border */
+  box-shadow: none !important; /* Overrides old nav shadow */
+  padding: 0 !important;
+}
+
+nav a {
+  font-family: 'Epilogue', serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+  color: #000000;
+  text-decoration: none;
+  transition: color 0.15s, transform 0.15s;
+  white-space: nowrap;
+}
+
+nav a:hover { 
+  color: var(--primary); 
+  transform: skewX(-2deg) translateY(-2px); 
+  background: transparent !important; /* Removes old yellow hover box */
+}
+
+nav a.active {
+  color: var(--primary);
+  border-bottom: 4px solid var(--primary);
+  padding-bottom: 0.25rem;
+}
+
+/* Stylized Profile Button */
+.profile-trigger {
+  width: 52px;
+  height: 52px;
+  background-color: var(--primary);
+  border: 3px solid #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.1s;
+  box-shadow: 5px 5px 0px 0px #000000;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.profile-trigger:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 3px 3px 0px 0px #000000;
+}
+
+.profile-trigger:active {
+  transform: translate(5px, 5px);
+  box-shadow: none;
+}
+
+.profile-trigger .material-symbols-outlined {
+  color: #000000;
+  font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 48;
+  font-size: 32px;
+}
+
+  /* ── Main ── */
+  main {
+    padding-top: 7rem;
+    padding-bottom: 3rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    max-width: 1920px;
+    margin: 0 auto;
+  }
+
+  /* ── Hero Section ── */
+  .hero {
+    position: relative;
+    margin-bottom: 3rem;
+    overflow: hidden;
+    background: var(--secondary-container);
+    border: 4px solid #000;
+    padding: 2.5rem;
+    box-shadow: 8px 8px 0px 0px #000;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: var(--primary);
+    color: var(--on-primary);
+    padding: 0.25rem 0.75rem;
+    font-family: 'Epilogue', sans-serif;
+    font-weight: 900;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    font-style: italic;
+    margin-bottom: 1rem;
+    border: 2px solid #000;
+    transform: rotate(-2deg);
+  }
+  .hero h1 {
+    font-family: 'Epilogue', sans-serif;
+    font-weight: 900;
+    font-size: clamp(3.5rem, 8vw, 6rem);
+    color: var(--on-secondary-container);
+    text-transform: uppercase;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .stat-card {
+    background: #fff;
+    border: 2px solid #000;
+    padding: 0.5rem 1rem;
+    box-shadow: 4px 4px 0px 0px #000;
+  }
+  .stat-card:nth-child(1) { transform: rotate(1deg); }
+  .stat-card:nth-child(2) {
+    background: var(--tertiary-container);
+    transform: rotate(-1deg);
+  }
+  .stat-label {
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--secondary);
+  }
+  .stat-card:nth-child(2) .stat-label { color: var(--tertiary); }
+  .stat-value {
+    font-size: 1.875rem;
+    font-weight: 900;
+  }
+
+  /* ── Layout Grid ── */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  @media (min-width: 1024px) {
+    .content-grid {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+  .left-col { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  /* ── Controls ── */
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    background: #fff;
+    border: 4px solid #000;
+    padding: 1rem;
+    box-shadow: 6px 6px 0px 0px #000;
+  }
+  @media (min-width: 768px) {
+    .controls { flex-direction: row; }
+  }
+  .filter-wrap {
+    position: relative;
+    flex: 1;
+    width: 100%;
+  }
+  .filter-wrap .material-symbols-outlined {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--outline);
+    font-size: 20px;
+  }
+  .filter-wrap input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 2px solid #000;
+    font-family: inherit;
+    font-weight: 700;
+    outline: none;
+    font-size: 0.9rem;
+  }
+  .filter-wrap input:focus {
+    box-shadow: 0 0 0 4px var(--secondary-container);
+  }
+  .controls-right {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  @media (min-width: 768px) {
+    .controls-right { width: auto; }
+  }
+  .controls-right select {
+    border: 2px solid #000;
+    font-family: inherit;
+    font-weight: 700;
+    padding: 0.75rem 1rem;
+    background: var(--tertiary-container);
+    box-shadow: 2px 2px 0px 0px #000;
+    outline: none;
+    transition: box-shadow 0.1s;
+    cursor: pointer;
+  }
+  .controls-right select:focus { box-shadow: none; }
+  .btn-sort {
+    background: #000;
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    font-family: inherit;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .btn-sort:hover { background: var(--primary); }
+  .btn-sort .material-symbols-outlined { font-size: 18px; }
+
+  /* ── Table ── */
+  .table-wrap {
+    background: #fff;
+    border: 4px solid #000;
+    box-shadow: 8px 8px 0px 0px #000;
+    overflow: hidden;
+  }
+  .table-scroll { overflow-x: auto; }
+  table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+  }
+  thead tr {
+    background: var(--secondary-fixed);
+    color: var(--on-secondary-fixed);
+    border-bottom: 4px solid #000;
+  }
+  th {
+    padding: 1rem 1.5rem;
+    font-family: 'Epilogue', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.875rem;
+  }
+  tbody tr {
+    border-bottom: 2px solid #000;
+    transition: background 0.15s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface-container); }
+  td {
+    padding: 1.25rem 1.5rem;
+    vertical-align: middle;
+  }
+  .td-id {
+    font-family: monospace;
+    font-weight: 700;
+    font-size: 0.875rem;
+  }
+  .user-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .user-avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+  .user-avatar-wrap img {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 2px solid #000;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+  }
+  .star-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--tertiary-container);
+    border: 1px solid #000;
+    border-radius: 50%;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .star-badge .material-symbols-outlined {
+    font-size: 10px;
+    font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 24;
+  }
+  .user-name {
+    font-weight: 900;
+    font-size: 1.05rem;
+    line-height: 1.2;
+  }
+  .user-email {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--outline);
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+  }
+  .new-badge {
+    background: var(--tertiary-container);
+    color: var(--on-tertiary-container);
+    font-size: 8px;
+    font-weight: 900;
+    padding: 2px 6px;
+    border: 1px solid #000;
+    transform: rotate(6deg);
+    display: inline-block;
+    margin-left: -8px;
+    flex-shrink: 0;
+  }
+  .role-tag {
+    font-size: 10px;
+    font-weight: 900;
+    padding: 2px 8px;
+    border: 1px solid #000;
+    text-transform: uppercase;
+    display: inline-block;
+  }
+  .role-senior   { background: var(--primary-container); color: var(--on-primary-container); }
+  .role-analyst  { background: var(--secondary); color: var(--on-secondary); }
+  .role-junior   { background: var(--surface-container-highest); color: var(--on-surface); }
+  .status-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid #000;
+    flex-shrink: 0;
+  }
+  .dot-green    { background: #22c55e; }
+  .dot-standby  { background: var(--tertiary-container); }
+  .status-label {
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+  .td-time {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: var(--outline);
+  }
+  .td-actions { text-align: right; }
+  .btn-more {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--outline);
+    transition: color 0.15s;
+    display: inline-flex;
+  }
+  .btn-more:hover { color: #000; }
+
+  /* ── Side Panel ── */
+  .side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .recruit-card {
+    background: #fff;
+    border: 4px solid #000;
+    padding: 2rem;
+    box-shadow: 8px 8px 0px 0px #000;
+    position: sticky;
+    top: 7rem;
+  }
+  .recruit-header {
+    margin-bottom: 2rem;
+  }
+  .recruit-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .recruit-title-row .material-symbols-outlined {
+    color: var(--primary);
+    font-size: 1.875rem;
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .recruit-title-row h3 {
+    font-family: 'Epilogue', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-style: italic;
+  }
+  .divider {
+    height: 4px;
+    background: #000;
+    width: 100%;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .form-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--secondary);
+  }
+  .form-input, .form-select {
+    width: 100%;
+    border: 2px solid #000;
+    padding: 0.75rem;
+    font-family: inherit;
+    font-weight: 700;
+    background: var(--surface-container-low);
+    outline: none;
+    transition: background 0.15s, box-shadow 0.15s;
+    font-size: 0.9rem;
+  }
+  .form-input:focus, .form-select:focus {
+    background: #fff;
+    box-shadow: 0 0 0 4px var(--primary-container);
+  }
+  .form-input.mono { font-family: monospace; }
+  .btn-deploy {
+    width: 100%;
+    background: var(--primary);
+    color: var(--on-primary);
+    padding: 1rem;
+    font-family: 'Epilogue', sans-serif;
+    font-weight: 900;
+    font-size: 1.25rem;
+    text-transform: uppercase;
+    font-style: italic;
+    border: 4px solid #000;
+    box-shadow: 6px 6px 0px 0px #000;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    transition: transform 0.1s, box-shadow 0.1s;
+    margin-top: 1rem;
+  }
+  .btn-deploy:hover {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+  }
+  .btn-deploy:active { transform: scale(0.95); }
+
+  /* ── Comic Stickers ── */
+  .stickers {
+    margin-top: 3rem;
+    position: relative;
+    height: 6rem;
+  }
+  .sticker {
+    position: absolute;
+    font-weight: 900;
+    font-size: 0.875rem;
+    border: 2px solid #000;
+    padding: 4px 12px;
+  }
+  .sticker-top-squad {
+    background: #fdd828;
+    top: 0; left: 0;
+    transform: rotate(-12deg);
+    box-shadow: 2px 2px 0px 0px #000;
+  }
+  .sticker-verified {
+    background: #52f9fc;
+    bottom: 0; right: 1rem;
+    transform: rotate(6deg);
+    box-shadow: 2px 2px 0px 0px #000;
+  }
+  .sticker-auth {
+    background: #fff;
+    font-size: 10px;
+    top: 2rem; left: 33%;
+    transform: rotate(-3deg);
+    box-shadow: 2px 2px 0px 0px #000;
+    text-transform: uppercase;
+  }
+
+  /* ── Footer ── */
+  /* ── Footer ── */
+footer {
+    background-color: #000000;
+    color: #ffffff;
+    width: 100%;
+    border-top: 4px solid #000000;
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+}
+
+@media (min-width: 768px) {
+    footer {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-brand-name {
+    font-family: 'Epilogue', sans-serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--tertiary-container); /* This is the yellow color */
+    text-shadow: 2px 2px 0 #000000;
+}
+
+.footer-rights {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #888888;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.footer-links a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: var(--primary);
+}
+
+.footer-socials {
+    display: flex;
+    gap: 12px;
+}
+
+.social-icon {
+    width: 48px;
+    height: 48px;
+    background-color: #ffffff;
+    border: 3px solid #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #000000;
+    box-shadow: 4px 4px 0px 0px #000000;
+    transition: all 0.1s;
+}
+
+.social-icon:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px 0px #000000;
+    background-color: var(--primary-container);
+}
+</style>
+</head>
+<body>
+
+<!-- TopAppBar -->
+<header>
+  <div class="header-inner">
+    <div class="header-left-group">
+      <a href="login_register.html" class="logo">WebName</a>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="inventoryMng.html">Inventory</a>
+        <a href="orderMng.html">Orders</a>
+        <a href="usersMng.html" class="active">Users</a>
+      </nav>
+    </div>
+
+    <a href="#" class="profile-trigger">
+      <span class="material-symbols-outlined">account_circle</span>
+    </a>
+  </div>
+</header>
+
+<main>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg halftone-cyan"></div>
+    <div class="hero-inner">
+      <div>
+        <span class="hero-badge">HQ DASHBOARD</span>
+        <h1 class="comic-stroke">USERS DIRECTORY</h1>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-card">
+          <p class="stat-label">Active Users</p>
+          <p class="stat-value">42</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">New Registrations</p>
+          <p class="stat-value">12</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="content-grid">
+    <!-- Left/Center Content -->
+    <div class="left-col">
+      <!-- Controls -->
+      <div class="controls">
+        <div class="filter-wrap">
+          <span class="material-symbols-outlined">search</span>
+          <input placeholder="Filter by name, ID or role..." type="text"/>
+        </div>
+        <div class="controls-right">
+          <select>
+            <option>ALL ROLES</option>
+            <option>OPERATIVE</option>
+            <option>CAPTAIN</option>
+            <option>ANALYST</option>
+          </select>
+          <button class="btn-sort">
+            <span class="material-symbols-outlined">sort</span> SORT
+          </button>
+        </div>
+      </div>
+
+      <!-- Users Table -->
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Member ID</th>
+                <th>Name &amp; Identity</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Last Active</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Row 1 -->
+              <tr>
+                <td class="td-id">#MP-9942</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar-wrap">
+                      <img alt="Kimberly" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGTTi6wMp0R4cVyBd2f2YT31Dn9_gmVIlVF4IiKW-yFYZWpeUXihxdMH9b0DdaypBaMi6NMZrSlZPFDvt3bKrNN1W_RfH9iJ030Htu3TybfLYdpB022179HROqqcNZNR55A5WjMarTbxfy0Co4o__jxTpoZooW4vvOGqn0CIMQ97XqulTJqC2r40tlo5tvAzS0mctS0n81GFeCMJPR81F3lGu1ncTZxNjVgxxNG-nbJ2uEp1J0Ll7JMSB7H6EyXUb5BFrdg7FDKIg"/>
+                      <div class="star-badge">
+                        <span class="material-symbols-outlined">star</span>
+                      </div>
+                    </div>
+                    <div>
+                      <p class="user-name">KIMBERLY PARK</p>
+                      <p class="user-email">kimberly@minipop.hq</p>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="role-tag role-senior">Senior Captain</span></td>
+                <td>
+                  <div class="status-cell">
+                    <span class="status-dot dot-green"></span>
+                    <span class="status-label">On Mission</span>
+                  </div>
+                </td>
+                <td class="td-time">2 mins ago</td>
+                <td class="td-actions">
+                  <button class="btn-more material-symbols-outlined">more_vert</button>
+                </td>
+              </tr>
+              <!-- Row 2 -->
+              <tr>
+                <td class="td-id">#MP-1108</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar-wrap">
+                      <img alt="Sion" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiw66YeX-OlGJAAvy7QAzBwYsGCGT931o4J9DLEPWZF7XeEeNJw0ccs0ctO1vZR0Dtyst-hD0mBWo_v5lN9H65Fc_B7g61tmLHUivYdqZNCcP-y7w-78zNQ67qHQaixAd6Dwai6scXoqY9f7fipU5boQUYa_S2RbCBd1I9BML6UPPXRu_23G2teviIR4ZsfqXOL6BNgtXw8N5OtmGuUmwSW1bjxpQZulbwjn4W0Y9Y56Aqkt-yX-gEz_prtmfnxuiMNpuwJWRzbTE"/>
+                    </div>
+                    <div>
+                      <p class="user-name">SION JUNG</p>
+                      <p class="user-email">sion@minipop.hq</p>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="role-tag role-analyst">Lead Analyst</span></td>
+                <td>
+                  <div class="status-cell">
+                    <span class="status-dot dot-standby"></span>
+                    <span class="status-label">Standby</span>
+                  </div>
+                </td>
+                <td class="td-time">1 hour ago</td>
+                <td class="td-actions">
+                  <button class="btn-more material-symbols-outlined">more_vert</button>
+                </td>
+              </tr>
+              <!-- Row 3 -->
+              <tr>
+                <td class="td-id">#MP-0077</td>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar-wrap">
+                      <img alt="Mina" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_7ke610wZETRWRHNojj4gD0QSQAytuCCbNkecLFVr6WPGfuZSifCDZcEuh6VINQGU6kKa3kzLSXMa_kGYh0C54h7o3duU_KZF1jpOnX3tbzjzuXCTiXSZpvbX47mp0RPNO6H7XIY1sL9Iu3jA-iQIgB_UpMcoxGGfpKyG9Ovi1B06NrXQyPuEP5D26_Dr52_HY3d_GpHlyJl1EbDTLytIQRdv-nHgWoMxb5HPZw583zzETI25psC9L2Kl9TTvkEtcSUuuqMu7-vk"/>
+                    </div>
+                    <div>
+                      <p class="user-name">MINA LEE</p>
+                      <p class="user-email">mina@minipop.hq</p>
+                    </div>
+                    <span class="new-badge">NEW MEMBER</span>
+                  </div>
+                </td>
+                <td><span class="role-tag role-junior">Junior Operative</span></td>
+                <td>
+                  <div class="status-cell">
+                    <span class="status-dot dot-green"></span>
+                    <span class="status-label">Active</span>
+                  </div>
+                </td>
+                <td class="td-time">Just now</td>
+                <td class="td-actions">
+                  <button class="btn-more material-symbols-outlined">more_vert</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Side Panel -->
+    <div class="side-panel">
+      <div class="recruit-card">
+        <div class="recruit-header">
+          <div class="recruit-title-row">
+            <span class="material-symbols-outlined">person_add</span>
+            <h3>QUICK RECRUIT</h3>
+          </div>
+          <div class="divider"></div>
+        </div>
+        <div class="form-stack">
+          <div class="form-group">
+            <label>Full Agent Name</label>
+            <input class="form-input" placeholder="e.g. JI-HOON CHOI" type="text"/>
+          </div>
+          <div class="form-group">
+            <label>Assigned Role</label>
+            <select class="form-select">
+              <option>Field Operative</option>
+              <option>Intelligence Analyst</option>
+              <option>System Tech</option>
+              <option>Unit Commander</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Employee ID Token</label>
+            <input class="form-input mono" placeholder="MP-XXXX" type="text"/>
+          </div>
+          <button class="btn-deploy" type="button">
+            DEPLOY CREW MEMBER
+            <span class="material-symbols-outlined">rocket_launch</span>
+          </button>
+        </div>
+        <!-- Comic Stickers -->
+        <div class="stickers">
+          <div class="sticker sticker-top-squad">TOP SQUAD</div>
+          <div class="sticker sticker-verified">VERIFIED</div>
+          <div class="sticker sticker-auth">Authorized Access Only</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-brand">
+        <span class="footer-brand-name">WebName</span>
+        <span class="footer-rights">© 2024 WebName Ltd.<br/>All rights reserved.</span>
+    </div>
+
+    <ul class="footer-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="inventory.html">Inventory</a></li>
+        <li><a href="orders.html">Orders</a></li>
+        <li><a href="usersMng.html">Users</a></li>
+    </ul>
+
+    <div class="footer-socials">
+        <a href="#" class="social-icon" title="Instagram">
+            <span class="material-symbols-outlined">photo_camera</span>
+        </a>
+        <a href="#" class="social-icon" title="Twitter / X">
+            <span class="material-symbols-outlined">alternate_email</span>
+        </a>
+        <a href="#" class="social-icon" title="YouTube">
+            <span class="material-symbols-outlined">smart_display</span>
+        </a>
+        <a href="#" class="social-icon" title="TikTok">
+            <span class="material-symbols-outlined">music_note</span>
+        </a>
+    </div>
+</footer>
+
+</body>
+</html>

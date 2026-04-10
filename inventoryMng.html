@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Inventory Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,900;1,900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --secondary-dim: #00595b;
+    --secondary-fixed-dim: #3ceaee;
+    --tertiary-container: #fdd828;
+    --on-primary-fixed: #000000;
+    --inverse-primary: #ff4e7c;
+    --surface: #f5f6f7;
+    --secondary-fixed: #52f9fc;
+    --secondary: #006668;
+    --tertiary: #6c5a00;
+    --surface-dim: #d1d5d7;
+    --on-tertiary: #fff2cc;
+    --on-surface: #2c2f30;
+    --on-background: #2c2f30;
+    --on-tertiary-container: #5b4c00;
+    --tertiary-fixed: #fdd828;
+    --outline: #757778;
+    --error: #b31b25;
+    --primary-container: #ff7290;
+    --primary-fixed: #ff7290;
+    --on-secondary-container: #005b5d;
+    --on-primary-container: #4d001a;
+    --surface-container-low: #eff1f2;
+    --surface-tint: #b70048;
+    --secondary-container: #52f9fc;
+    --surface-variant: #dadddf;
+    --surface-container: #e6e8ea;
+    --on-error: #ffefee;
+    --surface-container-highest: #dadddf;
+    --surface-bright: #f5f6f7;
+    --on-primary-fixed-variant: #5f0022;
+    --on-primary: #ffeff0;
+    --primary-dim: #a1003f;
+    --error-container: #fb5151;
+    --primary: #b70048;
+    --on-secondary: #c0feff;
+    --surface-container-lowest: #ffffff;
+    --on-surface-variant: #595c5d;
+    --surface-container-high: #e0e3e4;
+    --inverse-surface: #0c0f10;
+    --outline-variant: #abadae;
+    --primary-fixed-dim: #ff557f;
+    --on-secondary-fixed: #004749;
+    --font-headline: 'Epilogue', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --color-primary: #b70048;
+    --color-secondary: #006668;
+    --color-tertiary-container: #fdd828;
+  }
+
+  body {
+    background-color: var(--surface);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: var(--on-surface);
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background-color: var(--tertiary-container);
+    color: var(--on-tertiary-container);
+  }
+
+  /* ── Utility ── */
+  .halftone-bg {
+    background-image: radial-gradient(#000000 1px, transparent 0);
+    background-size: 10px 10px;
+    opacity: 0.05;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .comic-border-lg { border: 4px solid #000000; }
+  .comic-border-sm { border: 2px solid #000000; }
+  .text-stroke { -webkit-text-stroke: 1px #000000; }
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-size: 24px;
+    line-height: 1;
+    vertical-align: middle;
+    user-select: none;
+  }
+
+  /* ── Header ── */
+  /* ── Header ── */
+header {
+  background: #ffffff;
+  width: 100%;
+  border-bottom: 4px solid #000000;
+  position: relative;
+  z-index: 50;
+}
+
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 1rem 2.5rem;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.logo {
+  font-family: 'Epilogue', serif;
+  font-size: 1.875rem;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.05em;
+  color: #000000;
+  text-shadow: 4px 4px 0px #fdd828;
+  text-decoration: none;
+  text-transform: none; /* Set to none as requested for webname */
+  flex-shrink: 0;
+}
+
+.header-right-group {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.header-left-group {
+  display: flex;
+  align-items: baseline; 
+  gap: 3rem;
+}
+
+nav {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  background: transparent !important; /* Overrides old nav background */
+  border: none !important; /* Overrides old nav border */
+  box-shadow: none !important; /* Overrides old nav shadow */
+  padding: 0 !important;
+}
+
+nav a {
+  font-family: 'Epilogue', serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+  color: #000000;
+  text-decoration: none;
+  transition: color 0.15s, transform 0.15s;
+  white-space: nowrap;
+}
+
+nav a:hover { 
+  color: var(--primary); 
+  transform: skewX(-2deg) translateY(-2px); 
+  background: transparent !important; /* Removes old yellow hover box */
+}
+
+nav a.active {
+  color: var(--primary);
+  border-bottom: 4px solid var(--primary);
+  padding-bottom: 0.25rem;
+}
+
+/* Stylized Profile Button */
+.profile-trigger {
+  width: 52px;
+  height: 52px;
+  background-color: var(--primary);
+  border: 3px solid #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.1s;
+  box-shadow: 5px 5px 0px 0px #000000;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.profile-trigger:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 3px 3px 0px 0px #000000;
+}
+
+.profile-trigger:active {
+  transform: translate(5px, 5px);
+  box-shadow: none;
+}
+
+.profile-trigger .material-symbols-outlined {
+  color: #000000;
+  font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 48;
+  font-size: 32px;
+}
+
+  /* ── Main ── */
+  main {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  @media (min-width: 768px) { main { padding: 2.5rem; } }
+
+  /* ── Title Section ── */
+  .title-section {
+    margin-bottom: 2.5rem;
+    position: relative;
+  }
+  h1.page-title {
+    font-family: 'Epilogue', serif;
+    font-size: clamp(4rem, 10vw, 6rem);
+    font-weight: 900;
+    font-style: italic;
+    -webkit-text-stroke: 1px #000000;
+    color: var(--primary);
+    text-shadow: 8px 8px 0px #000000;
+    text-transform: uppercase;
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+  .level-badge {
+    position: absolute;
+    top: -1rem;
+    right: -1rem;
+    background-color: var(--tertiary-container);
+    border: 2px solid #000000;
+    padding: 0.25rem 1rem;
+    transform: rotate(3deg);
+    box-shadow: 4px 4px 0px 0px #000000;
+  }
+  .level-badge span {
+    font-weight: 900;
+    color: #000000;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  /* ── Grid ── */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  @media (min-width: 1024px) {
+    .main-grid { grid-template-columns: 7fr 5fr; }
+  }
+
+  /* ── Left Column ── */
+  .left-col { display: flex; flex-direction: column; gap: 1.5rem; }
+  .col-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 4px solid #000000;
+    padding-bottom: 1rem;
+  }
+  .col-header h2 {
+    font-family: 'Epilogue', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--on-surface);
+    text-transform: uppercase;
+    letter-spacing: -0.05em;
+  }
+  .col-header span {
+    font-weight: 700;
+    color: var(--secondary);
+    font-size: 0.875rem;
+  }
+
+  /* ── Search & Filter ── */
+  .search-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  @media (min-width: 768px) { .search-filter { flex-direction: row; } }
+  .search-wrap {
+    position: relative;
+    flex-grow: 1;
+  }
+  .search-wrap input {
+    width: 100%;
+    background: #ffffff;
+    border: 4px solid #000000;
+    padding: 0.75rem 0.75rem 0.75rem 3rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    color: var(--on-surface);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-wrap input::placeholder { color: var(--outline); }
+  .search-wrap input:focus { border-color: var(--primary); }
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 900;
+    color: #000000;
+  }
+  .filter-wrap {
+    position: relative;
+    min-width: 200px;
+  }
+  .filter-wrap select {
+    width: 100%;
+    background: #ffffff;
+    border: 4px solid #000000;
+    padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+  }
+  .filter-arrow {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #000000;
+  }
+
+  /* ── Product Cards ── */
+  .product-list { display: flex; flex-direction: column; gap: 0; }
+  .product-card {
+    background: var(--surface-container-lowest);
+    border: 2px solid #000000;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 4px 4px 0px 0px #000000;
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .product-card:hover { transform: translate(2px, 2px); box-shadow: none; }
+  .product-thumb {
+    width: 5rem;
+    height: 5rem;
+    border: 2px solid #000000;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .product-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .thumb-teal { background-color: var(--secondary-container); }
+  .thumb-pink { background-color: var(--primary-container); }
+  .thumb-blue { background-color: var(--secondary-fixed); }
+  .product-info { flex-grow: 1; }
+  .product-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .product-top h3 {
+    font-family: 'Epilogue', serif;
+    font-weight: 900;
+    font-size: 1.25rem;
+    color: #000000;
+  }
+  .product-top p {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--on-surface-variant);
+    margin-top: 0.125rem;
+  }
+  .badge {
+    padding: 0.125rem 0.5rem;
+    font-size: 0.625rem;
+    font-weight: 900;
+    border-radius: 999px;
+    border: 2px solid #000000;
+    white-space: nowrap;
+  }
+  .badge-in { background-color: var(--primary); color: var(--on-primary); }
+  .badge-low { background-color: var(--tertiary-container); color: var(--on-tertiary-container); }
+  .product-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+  .product-stats { display: flex; gap: 1rem; }
+  .stat-label {
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--on-surface-variant);
+  }
+  .stat-val-good { font-weight: 900; color: var(--secondary); }
+  .stat-val-bad  { font-weight: 900; color: var(--error); }
+  .stat-val-norm { font-weight: 900; color: #000000; }
+  .action-btns { display: flex; gap: 0.5rem; }
+  .action-btn {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--surface-variant);
+    border: 2px solid #000000;
+    cursor: pointer;
+    transition: background-color 0.15s;
+  }
+  .action-btn:hover.edit-btn { background-color: var(--tertiary-container); }
+  .action-btn:hover.view-btn { background-color: var(--secondary-container); }
+  .action-btn .material-symbols-outlined { font-size: 1rem; }
+
+  /* ── Right Column ── */
+  /*.right-col {}*/
+  .quick-add-panel {
+    background-color: var(--tertiary-container);
+    border: 4px solid #000000;
+    padding: 2rem;
+    box-shadow: 10px 10px 0px 0px #000000;
+    position: relative;
+  }
+  .panel-label {
+    position: absolute;
+    top: -1.5rem;
+    left: 2rem;
+    background: #000000;
+    color: #ffffff;
+    border: 2px solid #000000;
+    padding: 0.5rem 1.5rem;
+    transform: rotate(-1deg);
+  }
+  .panel-label h2 {
+    font-family: 'Epilogue', serif;
+    font-weight: 900;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: -0.05em;
+  }
+  .quick-add-form { margin-top: 2rem; }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label {
+    display: block;
+    font-weight: 900;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    background: #ffffff;
+    border: 2px solid #000000;
+    padding: 0.75rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.875rem;
+    outline: none;
+    transition: box-shadow 0.15s;
+  }
+  .form-group input:focus { box-shadow: 0 0 0 4px rgba(0,102,104,0.2); }
+  .form-group input::placeholder { color: var(--outline-variant, #abadae); }
+  .form-group select { appearance: none; cursor: pointer; }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .btn-deploy {
+    display: block;
+    width: 100%;
+    background-color: var(--primary);
+    color: var(--on-primary);
+    border: 2px solid #000000;
+    padding: 1.25rem;
+    box-shadow: 6px 6px 0px 0px #000000;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 1.5rem;
+  }
+  .btn-deploy:hover { transform: translate(3px, 3px); box-shadow: none; }
+  .btn-deploy:active { background-color: var(--primary-dim); }
+  .btn-deploy span {
+    font-family: 'Epilogue', serif;
+    font-weight: 900;
+    font-size: 1.875rem;
+    text-transform: uppercase;
+    font-style: italic;
+    letter-spacing: 0.1em;
+    -webkit-text-stroke: 1px #000000;
+  }
+  .deploy-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+  }
+  .pulse-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: var(--error);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  .deploy-status p {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--on-tertiary-container);
+    font-style: italic;
+  }
+  .sticker-badge {
+    position: absolute;
+    bottom: -1.5rem;
+    right: -1.5rem;
+    background-color: var(--secondary-container);
+    border: 2px solid #000000;
+    padding: 0.5rem 1rem;
+    transform: rotate(6deg);
+    box-shadow: 4px 4px 0px 0px #000000;
+  }
+  .sticker-badge span {
+    font-weight: 900;
+    color: var(--secondary);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-style: italic;
+  }
+
+  /* ── Alerts Panel ── */
+  .alerts-panel {
+    margin-top: 3rem;
+    background: #ffffff;
+    border: 2px solid #000000;
+    padding: 1.5rem;
+    box-shadow: 6px 6px 0px 0px #000000;
+  }
+  .alerts-panel h4 {
+    font-family: 'Epilogue', serif;
+    font-weight: 900;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #000000;
+    padding-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+  .alerts-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+  .alert-item { display: flex; gap: 1rem; align-items: flex-start; }
+  .alert-icon {
+    padding: 0.25rem;
+    border: 2px solid #000000;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .alert-icon.error { background-color: var(--error); }
+  .alert-icon.info  { background-color: var(--secondary); }
+  .alert-icon .material-symbols-outlined { color: #ffffff; font-size: 1.125rem; }
+  .alert-item p { font-size: 0.75rem; font-weight: 700; line-height: 1.4; }
+
+  /* ── Footer ── */
+  /* ── Footer ── */
+footer {
+    background-color: #000000; /* Inventory style uses a black background */
+    color: #ffffff;
+    width: 100%;
+    border-top: 4px solid #000000;
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+}
+
+@media (min-width: 768px) {
+footer {
+    flex-direction: row;
+    align-items: flex-start;
+    }
+}
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-brand-name {
+    font-family: 'Epilogue', sans-serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--tertiary-container); /* Use the yellow variable */
+    text-transform: none; /* Keeps webname case-sensitive as requested */
+    text-shadow: 2px 2px 0 #000000;
+}
+
+.footer-rights {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #888888;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.footer-links a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: var(--primary);
+}
+
+.footer-socials {
+    display: flex;
+    gap: 12px;
+}
+
+.social-icon {
+    width: 48px;
+    height: 48px;
+    background-color: #ffffff;
+    border: 3px solid #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #000000;
+    box-shadow: 4px 4px 0px 0px #000000;
+    transition: all 0.1s;
+}
+
+.social-icon:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px 0px #000000;
+    background-color: var(--primary-container);
+}
+</style>
+</head>
+<body>
+
+<!-- TopNavBar -->
+<header>
+  <div class="header-inner">
+    <div class="header-left-group">
+      <a href="login_register.html" class="logo">WebName</a>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="inventoryMng.html" class="active">Inventory</a>
+        <a href="orderMng.html">Orders</a>
+        <a href="usersMng.html">Users</a>
+      </nav>
+    </div>
+
+    <a href="#" class="profile-trigger">
+      <span class="material-symbols-outlined">account_circle</span>
+    </a>
+  </div>
+</header>
+
+<main>
+  <!-- Title Section -->
+  <div class="title-section">
+    <h1 class="page-title text-stroke">Inventory</h1>
+    <div class="level-badge">
+      <span>Level: Supercharged</span>
+    </div>
+  </div>
+
+  <div class="main-grid">
+    <!-- Left Column: PRODUCT -->
+    <div class="left-col">
+      <div class="col-header">
+        <h2>ALL PRODUCTS</h2>
+        <span>TOTAL ITEMS: 142</span>
+      </div>
+
+      <!-- Search & Filter -->
+      <div class="search-filter">
+        <div class="search-wrap">
+          <input type="text" placeholder="Search items..."/>
+          <span class="material-symbols-outlined search-icon">search</span>
+        </div>
+        <div class="filter-wrap">
+          <select>
+            <option>All Categories</option>
+            <option>Beverages</option>
+            <option>Snacks</option>
+            <option>Instant Food</option>
+            <option>Sweets</option>
+          </select>
+          <span class="material-symbols-outlined filter-arrow">keyboard_arrow_down</span>
+        </div>
+      </div>
+
+      <!-- Product Cards -->
+      <div class="product-list">
+
+        <!-- Card 1 -->
+        <div class="product-card comic-border-sm">
+          <div class="halftone-bg"></div>
+          <div class="product-thumb thumb-teal comic-border-sm">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRn-aaSy3V1BEXBhAzx7pQXy5mPVYAsL7gJVG0wysj1Bm__3vKNIRF6QA56oQbwxORdJVhpabXfYB5wS0ajw3rIdO6uUgLXLuRuwm_FhN4ztgr_JOQ32PjyKNARO4zNKGfPeHilWLPNLZhJb9brU9PRaT3edmQEMvaiT0fwmHxhaXXy96ogDK4ixQTxw1SOkwTnl7NvSKYgUsmnL3CRIULAf5U8mFUrWP3SmNY9KWM-8vMFUFXivEXjLIEcRKZHNbUzLWDJunIp7s" alt="Soda can"/>
+          </div>
+          <div class="product-info">
+            <div class="product-top">
+              <div>
+                <h3>Electric Soda X-10</h3>
+                <p>SKU: SM-EL-001</p>
+              </div>
+              <span class="badge badge-in">IN STOCK</span>
+            </div>
+            <div class="product-bottom">
+              <div class="product-stats">
+                <div>
+                  <p class="stat-label">Stock Level</p>
+                  <p class="stat-val-good">1,240 Units</p>
+                </div>
+                <div>
+                  <p class="stat-label">Price</p>
+                  <p class="stat-val-norm">₩3,500</p>
+                </div>
+              </div>
+              <div class="action-btns">
+                <button class="action-btn edit-btn"><span class="material-symbols-outlined">edit</span></button>
+                <button class="action-btn view-btn"><span class="material-symbols-outlined">visibility</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="product-card comic-border-sm">
+          <div class="halftone-bg"></div>
+          <div class="product-thumb thumb-pink comic-border-sm">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDFhvr1RGUqSe7SoEaaO1EquoLQ27Qp_zdrx89aM13_URmXLXVLDavFoYHIUQRolMJsAyC3gPCL1luZ7gfeMyW6F1GFXDIh9i6-EwNXuWutN_dQhzgE9E0g9um4gls1hVv7Appq0MVHCKFDA4GOgqW7LuprixXCRWh5fku4XKgal_vsB1ramQ-AdVU0b24Rzq19DiZqod7T9pdax23GBg-86m-7XQzt87J9f4zafXfCVXB_ajQsD5lTHCV8bLzvFJiDFPGYG8wXdg" alt="Chips bag"/>
+          </div>
+          <div class="product-info">
+            <div class="product-top">
+              <div>
+                <h3>Magma Crunch Chips</h3>
+                <p>SKU: SM-SN-042</p>
+              </div>
+              <span class="badge badge-low">LOW STOCK</span>
+            </div>
+            <div class="product-bottom">
+              <div class="product-stats">
+                <div>
+                  <p class="stat-label">Stock Level</p>
+                  <p class="stat-val-bad">12 Units</p>
+                </div>
+                <div>
+                  <p class="stat-label">Price</p>
+                  <p class="stat-val-norm">₩2,200</p>
+                </div>
+              </div>
+              <div class="action-btns">
+                <button class="action-btn edit-btn"><span class="material-symbols-outlined">edit</span></button>
+                <button class="action-btn view-btn"><span class="material-symbols-outlined">visibility</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="product-card comic-border-sm">
+          <div class="halftone-bg"></div>
+          <div class="product-thumb thumb-blue comic-border-sm">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzoebOZTIiMQf8ndi8ae06gFNjrCVsNvixvntozQFEoqExPpCIRysHMxlgzr6Ngko-gcfXh-B9AEjUsmN_sPfglz1viXVLKX1yXO3v0iO2juLzr4Gx5GwxdZrnYPr4gvscOlSm7QoXwzsOJ2v4EzssdKVSzeNiQONCIEYwyl1eCq9ae1F860Yq5BeXiZMbxrXe1bA0oFrj7n-W5yBKFR9Z9aBCP8okPqxBf-7xIyqmo2Gw6k3HZVHtrFF4deNEqfHc02nPDSVo9bk" alt="Water bottle"/>
+          </div>
+          <div class="product-info">
+            <div class="product-top">
+              <div>
+                <h3>Void Still Water</h3>
+                <p>SKU: SM-WA-109</p>
+              </div>
+              <span class="badge badge-in">IN STOCK</span>
+            </div>
+            <div class="product-bottom">
+              <div class="product-stats">
+                <div>
+                  <p class="stat-label">Stock Level</p>
+                  <p class="stat-val-good">482 Units</p>
+                </div>
+                <div>
+                  <p class="stat-label">Price</p>
+                  <p class="stat-val-norm">₩1,100</p>
+                </div>
+              </div>
+              <div class="action-btns">
+                <button class="action-btn edit-btn"><span class="material-symbols-outlined">edit</span></button>
+                <button class="action-btn view-btn"><span class="material-symbols-outlined">visibility</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right Column: DEPLOYMENT PANEL -->
+    <div class="right-col">
+      <div class="quick-add-panel comic-border-lg">
+        <div class="panel-label">
+          <h2>QUICK ADD PRODUCT</h2>
+        </div>
+
+        <form class="quick-add-form" onsubmit="return false;">
+          <div class="form-group">
+            <label>Product Name</label>
+            <input type="text" placeholder="e.g. Buldak Ramen"/>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Code</label>
+              <input type="text" placeholder="SM-XXX-000"/>
+            </div>
+            <div class="form-group">
+              <label>Category</label>
+              <select>
+                <option>Beverages</option>
+                <option>Snacks</option>
+                <option>Health</option>
+                <option>Limited Edition</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Unit Price (₩)</label>
+              <input type="number" placeholder="0.00"/>
+            </div>
+            <div class="form-group">
+              <label>Initial Stock</label>
+              <input type="number" placeholder="0"/>
+            </div>
+          </div>
+
+          <button class="btn-deploy comic-border-sm" type="submit">
+            <span>DEPLOY ITEM</span>
+          </button>
+
+          <div class="deploy-status">
+            <div class="pulse-dot"></div>
+            <p>Ready for immediate local transmission</p>
+          </div>
+        </form>
+
+        <div class="sticker-badge comic-border-sm">
+          <span>NEW BATCH!</span>
+        </div>
+      </div>
+
+      <!-- Alerts -->
+      <div class="alerts-panel comic-border-sm">
+        <h4>COMMAND ALERTS</h4>
+        <ul class="alerts-list">
+          <li class="alert-item">
+            <div class="alert-icon error">
+              <span class="material-symbols-outlined">warning</span>
+            </div>
+            <p>Warehouse 04 reporting moisture level increase. Check inventory seals immediately.</p>
+          </li>
+          <li class="alert-item">
+            <div class="alert-icon info">
+              <span class="material-symbols-outlined">bolt</span>
+            </div>
+            <p>High demand spike detected for 'Electric Soda' in Gangnam sector.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-brand">
+        <span class="footer-brand-name">WebName</span>
+        <span class="footer-rights">© 2024 WebName Ltd.<br/>All rights reserved.</span>
+    </div>
+
+    <ul class="footer-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="inventory.html">Inventory</a></li>
+        <li><a href="orders.html">Orders</a></li>
+        <li><a href="users.html">Users</a></li>
+    </ul>
+
+    <div class="footer-socials">
+        <a href="#" class="social-icon" title="Instagram">
+            <span class="material-symbols-outlined">photo_camera</span>
+        </a>
+        <a href="#" class="social-icon" title="Twitter / X">
+            <span class="material-symbols-outlined">alternate_email</span>
+        </a>
+        <a href="#" class="social-icon" title="YouTube">
+            <span class="material-symbols-outlined">smart_display</span>
+        </a>
+        <a href="#" class="social-icon" title="TikTok">
+            <span class="material-symbols-outlined">music_note</span>
+        </a>
+    </div>
+</footer>
+
+</body>
+</html>

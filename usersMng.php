@@ -150,6 +150,7 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
   .footer-socials { display: flex; gap: 12px; }
   .social-icon { width: 48px; height: 48px; background: #fff; border: 3px solid #000; display: flex; align-items: center; justify-content: center; text-decoration: none; color: #000; box-shadow: 4px 4px 0px 0px #000; transition: all 0.1s; }
   .social-icon:hover { transform: translate(2px,2px); background: var(--primary-container); }
+  .badge-cashier { background: var(--tertiary-container); color: var(--on-tertiary-container); }
 </style>
 </head>
 <body>
@@ -212,8 +213,9 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
     <div class="filter-wrap">
       <select name="role_filter">
         <option value="">All Roles</option>
-        <option value="customer" <?php echo $role_filter==='customer' ? 'selected':''; ?>>Customer</option>
-        <option value="admin"    <?php echo $role_filter==='admin'    ? 'selected':''; ?>>Admin</option>
+        <option value="customer" <?php echo $u['role']==='customer' ? 'selected':''; ?>>Customer</option>
+        <option value="cashier"  <?php echo $u['role']==='cashier'  ? 'selected':''; ?>>Cashier</option>
+        <option value="admin"    <?php echo $u['role']==='admin'    ? 'selected':''; ?>>Admin</option>
       </select>
       <span class="material-symbols-outlined filter-arrow">keyboard_arrow_down</span>
     </div>

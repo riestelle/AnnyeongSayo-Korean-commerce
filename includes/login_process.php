@@ -19,6 +19,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if ($user['role'] === 'admin') {
                 header("Location: ../dashboard.php");
+            } else if ($user['role'] === 'cashier') {
+                header("Location: ../cashierMng.php");
             } else {
                 header("Location: ../shop.php");
             }

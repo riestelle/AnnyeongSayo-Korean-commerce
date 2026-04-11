@@ -15,7 +15,7 @@ $total_revenue  = $total_revenue_row[0] ?? 0;
 
 // Top 3 selling products
 $top_products_result = mysqli_query($con, "
-    SELECT p.name, p.price, SUM(oi.quantity) AS sold
+    SELECT p.name, p.price, p.image_url, SUM(oi.quantity) AS sold
     FROM order_items oi
     JOIN products p ON oi.product_id = p.id
     GROUP BY p.id
@@ -251,7 +251,12 @@ $pending_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orde
         ?>
         <div class="item-card">
           <div class="item-img-wrap">
+            <?php if (!empty($p['image_url'])): ?>
+            <img src="<?php echo htmlspecialchars($p['image_url']); ?>" alt="<?php echo htmlspecialchars($p['name']); ?>" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+            <span class="material-symbols-outlined" style="display:none">inventory_2</span>
+            <?php else: ?>
             <span class="material-symbols-outlined">inventory_2</span>
+            <?php endif; ?>
             <div class="item-rank <?php echo $rank; ?>">#<?php echo $i+1; ?></div>
           </div>
           <h4><?php echo htmlspecialchars($p['name']); ?></h4>

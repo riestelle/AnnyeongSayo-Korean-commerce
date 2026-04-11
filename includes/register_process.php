@@ -1,5 +1,5 @@
 <?php
-require_once 'includes/connect.php';
+require_once 'connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = mysqli_real_escape_string($con, trim($_POST['username']));
@@ -13,13 +13,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result    = mysqli_query($con, $checkUser);
 
     if (mysqli_num_rows($result) > 0) {
-        header("Location: login_register.php?form=register&error=taken");
+        header("Location: ../login_register.php?form=register&error=taken");
     } else {
         $sql = "INSERT INTO users (username, email, password, role) VALUES ('$username', '$email', '$hashed_password', '$role')";
         if (mysqli_query($con, $sql)) {
-            header("Location: login_register.php?form=login&success=registered");
+            header("Location: ../login_register.php?form=login&success=registered");
         } else {
-            header("Location: login_register.php?form=register&error=db_error");
+            header("Location: ../login_register.php?form=register&error=db_error");
         }
     }
 }

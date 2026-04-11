@@ -1,29 +1,25 @@
 <?php
-require_once 'includes/connect.php'; // Use your verified connection
+require_once 'includes/connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = mysqli_real_escape_string($con, $_POST['username']);
-    $password = $_POST['password']; 
-    $role = 'customer'; // Default role for new sign-ups
+    $username = mysqli_real_escape_string($con, trim($_POST['username']));
+    $email    = mysqli_real_escape_string($con, trim($_POST['email'] ?? ''));
+    $password = $_POST['password'];
+    $role     = 'customer';
 
-    // 1. SECURITY: Hash the password (Information Security requirement)
-    // We use BCRYPT, just like in your previous CMD exercises.
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-    // 2. CHECK: Ensure username isn't taken
     $checkUser = "SELECT * FROM users WHERE username = '$username'";
-    $result = mysqli_query($con, $checkUser);
+    $result    = mysqli_query($con, $checkUser);
 
     if (mysqli_num_rows($result) > 0) {
-        header("Location: ../login_register.php?form=register&error=taken");
+        header("Location: login_register.php?form=register&error=taken");
     } else {
-        // 3. ACTION: Insert into the korean_store database
-        $sql = "INSERT INTO users (username, password, role) VALUES ('$username', '$hashed_password', '$role')";
-        
+        $sql = "INSERT INTO users (username, email, password, role) VALUES ('$username', '$email', '$hashed_password', '$role')";
         if (mysqli_query($con, $sql)) {
-            header("Location: ../login_register.php?form=login&success=registered");
+            header("Location: login_register.php?form=login&success=registered");
         } else {
-            echo "Error: " . mysqli_error($con);
+            header("Location: login_register.php?form=register&error=db_error");
         }
     }
 }

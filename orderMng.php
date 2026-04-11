@@ -1,0 +1,324 @@
+<?php
+require_once 'includes/check_admin.php';
+require_once 'includes/connect.php';
+
+$username = $_SESSION['username'] ?? 'Admin';
+$user_id  = $_SESSION['user_id']  ?? '00000';
+$role     = $_SESSION['role']     ?? 'admin';
+
+$msg = ''; $msg_type = '';
+
+// ── UPDATE status ──
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_status') {
+    $order_id  = intval($_POST['order_id']);
+    $new_status = mysqli_real_escape_string($con, $_POST['status']);
+    $allowed = ['pending','completed','cancelled'];
+    if (in_array($new_status, $allowed)) {
+        mysqli_query($con, "UPDATE orders SET status='$new_status' WHERE id=$order_id");
+        $msg = '✅ Order #' . $order_id . ' status updated to ' . strtoupper($new_status) . '!';
+        $msg_type = 'success';
+    }
+}
+
+// ── DELETE order ──
+if (isset($_GET['delete'])) {
+    $del_id = intval($_GET['delete']);
+    mysqli_query($con, "DELETE FROM orders WHERE id=$del_id");
+    $msg = '🗑️ Order deleted.';
+    $msg_type = 'info';
+}
+
+// ── READ + SEARCH ──
+$search     = isset($_GET['search'])  ? mysqli_real_escape_string($con, trim($_GET['search']))  : '';
+$status_filter = isset($_GET['status']) ? mysqli_real_escape_string($con, trim($_GET['status'])) : '';
+
+$where = "WHERE 1=1";
+if ($search)       $where .= " AND (o.id LIKE '%$search%' OR u.username LIKE '%$search%')";
+if ($status_filter) $where .= " AND o.status='$status_filter'";
+
+$orders_result = mysqli_query($con, "
+    SELECT o.*, u.username
+    FROM orders o
+    JOIN users u ON o.user_id = u.id
+    $where
+    ORDER BY o.order_date DESC
+");
+
+// Metrics
+$total_orders    = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orders"))[0];
+$pending_count   = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orders WHERE status='pending'"))[0];
+$completed_count = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orders WHERE status='completed'"))[0];
+$total_rev_row   = mysqli_fetch_row(mysqli_query($con, "SELECT SUM(total_amount) FROM orders WHERE status='completed'"));
+$total_rev       = $total_rev_row[0] ?? 0;
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --primary: #b70048; --primary-container: #ff7290; --on-primary: #ffeff0; --primary-dim: #a1003f;
+    --secondary: #006668; --secondary-container: #52f9fc; --on-secondary-container: #005b5d;
+    --tertiary: #6c5a00; --tertiary-container: #fdd828; --on-tertiary-container: #5b4c00;
+    --background: #f5f6f7; --surface: #f5f6f7; --on-background: #2c2f30; --on-surface: #2c2f30;
+    --surface-container: #e6e8ea; --surface-container-low: #eff1f2; --surface-container-lowest: #fff;
+    --surface-container-highest: #dadddf; --on-surface-variant: #595c5d;
+    --outline: #757778; --outline-variant: #abadae;
+    --error: #b31b25; --error-container: #fb5151; --on-error: #ffefee;
+    --font-headline: 'Epilogue', sans-serif; --font-body: 'Plus Jakarta Sans', sans-serif;
+  }
+  body { background: var(--background); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--on-background); min-height: 100vh; display: flex; flex-direction: column; }
+  .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; font-size: 24px; line-height: 1; vertical-align: middle; user-select: none; display:inline-block; }
+  header { background: #fff; width: 100%; border-bottom: 4px solid #000; position: sticky; top: 0; z-index: 50; }
+  .header-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 1rem 2.5rem; }
+  .logo { font-family: 'Epilogue', serif; font-size: 1.875rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #000; text-shadow: 4px 4px 0px #fdd828; text-decoration: none; }
+  .header-left-group { display: flex; align-items: baseline; gap: 3rem; }
+  nav { display: flex; gap: 2rem; align-items: center; }
+  nav a { font-family: 'Epilogue', serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.05em; color: #000; text-decoration: none; transition: color 0.15s; white-space: nowrap; }
+  nav a:hover { color: var(--primary); }
+  nav a.active { color: var(--primary); border-bottom: 4px solid var(--primary); padding-bottom: 0.25rem; }
+  .profile-trigger-wrap { position: relative; }
+  .profile-trigger { width: 52px; height: 52px; background: var(--primary); border: 3px solid #000; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.1s; box-shadow: 5px 5px 0px 0px #000; text-decoration: none; }
+  .profile-trigger:hover { transform: translate(2px,2px); box-shadow: 3px 3px 0px 0px #000; }
+  .profile-trigger .material-symbols-outlined { color: #000; font-variation-settings: 'FILL' 1,'wght' 700,'GRAD' 0,'opsz' 48; font-size: 32px; }
+  .profile-dropdown { display: none; position: absolute; top: calc(100% + 12px); right: 0; background: #fff; border: 4px solid #000; box-shadow: 8px 8px 0px 0px #000; min-width: 220px; z-index: 999; transform: rotate(3deg); }
+  .profile-dropdown.open { display: block; }
+  .dropdown-user-info { padding: 16px 20px; background: var(--primary-container); border-bottom: 4px solid #000; }
+  .dropdown-username { font-family: var(--font-headline); font-weight: 900; font-style: italic; font-size: 1.1rem; color: #000; text-transform: uppercase; display: block; }
+  .dropdown-role { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: rgba(0,0,0,0.6); display: block; }
+  .dropdown-logout { display: flex; align-items: center; gap: 10px; padding: 14px 20px; font-family: var(--font-headline); font-weight: 900; font-style: italic; font-size: 0.9rem; text-transform: uppercase; color: #000; text-decoration: none; background: var(--primary); transition: background 0.1s; }
+  .dropdown-logout:hover { background: var(--tertiary-container); }
+  main { flex-grow: 1; max-width: 1440px; margin: 0 auto; padding: 2.5rem; width: 100%; }
+  h1.page-title { font-family: 'Epilogue', serif; font-size: clamp(3rem,8vw,5rem); font-weight: 900; font-style: italic; -webkit-text-stroke: 1px #000; color: var(--primary); text-shadow: 6px 6px 0px #000; text-transform: uppercase; line-height: 1; letter-spacing: -0.05em; margin-bottom: 2rem; }
+  /* Metrics */
+  .metrics-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; margin-bottom: 2rem; }
+  @media (min-width: 768px) { .metrics-grid { grid-template-columns: repeat(4,1fr); } }
+  .metric-card { border: 4px solid #000; padding: 1.25rem; position: relative; overflow: hidden; }
+  .metric-card.pink { background: var(--primary-container); }
+  .metric-card.teal { background: var(--secondary-container); }
+  .metric-card.yellow { background: var(--tertiary-container); }
+  .metric-card.white { background: #fff; }
+  .metric-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: rgba(0,0,0,0.6); margin-bottom: 0.5rem; }
+  .metric-value { font-family: 'Epilogue', serif; font-size: 2.5rem; font-weight: 900; font-style: italic; -webkit-text-stroke: 1px #000; line-height: 1; }
+  /* Alert */
+  .alert-msg { padding: 1rem; border: 2px solid #000; font-weight: 700; margin-bottom: 1.5rem; }
+  .alert-msg.success { background: var(--secondary-container); color: var(--on-secondary-container); }
+  .alert-msg.info { background: var(--tertiary-container); color: var(--on-tertiary-container); }
+  .alert-msg.error { background: var(--error-container); color: var(--on-error); }
+  /* Search */
+  .search-bar { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .search-wrap { position: relative; flex-grow: 1; }
+  .search-wrap input { width: 100%; background: #fff; border: 4px solid #000; padding: 0.75rem 0.75rem 0.75rem 3rem; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 0.875rem; outline: none; }
+  .search-wrap input:focus { border-color: var(--primary); }
+  .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); }
+  .filter-wrap { position: relative; min-width: 160px; }
+  .filter-wrap select { width: 100%; background: #fff; border: 4px solid #000; padding: 0.75rem 2.5rem 0.75rem 0.75rem; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 0.875rem; appearance: none; cursor: pointer; outline: none; }
+  .filter-arrow { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); pointer-events: none; }
+  .btn-search { background: #000; color: #fff; border: 4px solid #000; padding: 0.75rem 1.5rem; font-family: 'Epilogue', serif; font-weight: 900; font-size: 0.875rem; text-transform: uppercase; cursor: pointer; }
+  .btn-search:hover { background: var(--primary); }
+  .btn-clear { background: #fff; color: #000; border: 4px solid #000; padding: 0.75rem 1rem; font-weight: 700; cursor: pointer; text-decoration: none; font-size: 0.875rem; display: inline-block; }
+  /* Table */
+  .table-wrap { background: #fff; border: 4px solid #000; overflow-x: auto; }
+  .section-title { padding: 1.25rem 1.5rem; background: #000; color: #fff; font-family: 'Epilogue', serif; font-weight: 900; font-style: italic; font-size: 1.25rem; text-transform: uppercase; letter-spacing: -0.03em; }
+  table { width: 100%; border-collapse: collapse; min-width: 700px; }
+  thead tr { background: var(--surface-container-highest); border-bottom: 4px solid #000; }
+  thead th { padding: 1rem; text-align: left; font-weight: 900; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+  tbody tr { border-bottom: 2px solid #000; transition: background 0.15s; }
+  tbody tr:hover { background: var(--surface-container-low); }
+  tbody td { padding: 1rem; font-size: 0.875rem; vertical-align: middle; }
+  .order-id { font-weight: 900; font-family: 'Epilogue', serif; }
+  .customer-name { font-weight: 700; }
+  .amount { font-weight: 900; color: var(--primary); }
+  .ts { font-size: 0.75rem; color: var(--on-surface-variant); font-weight: 700; }
+  .badge { padding: 0.2rem 0.6rem; font-size: 0.7rem; font-weight: 900; border: 2px solid #000; display: inline-block; }
+  .badge-pending { background: var(--tertiary-container); color: var(--on-tertiary-container); }
+  .badge-completed { background: var(--secondary-container); color: var(--on-secondary-container); }
+  .badge-cancelled { background: var(--error-container); color: var(--on-error); }
+  .action-cell { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .status-form select { background: #fff; border: 2px solid #000; padding: 0.3rem 0.5rem; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 0.75rem; cursor: pointer; }
+  .btn-update { background: var(--secondary); color: var(--on-secondary); border: 2px solid #000; padding: 0.3rem 0.75rem; font-weight: 900; font-size: 0.75rem; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
+  .btn-update:hover { background: var(--secondary-dim, #00595b); }
+  .btn-delete { background: var(--error-container); color: var(--on-error); border: 2px solid #000; padding: 0.3rem 0.75rem; font-weight: 900; font-size: 0.75rem; cursor: pointer; text-decoration: none; white-space: nowrap; display: inline-block; }
+  .btn-delete:hover { background: var(--error); color: var(--on-error); }
+  .no-orders { padding: 3rem; text-align: center; font-weight: 700; color: var(--outline); font-style: italic; }
+  /* Footer */
+  footer { background: #000; border-top: 4px solid #000; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 24px; margin-top: auto; }
+  @media (min-width: 768px) { footer { flex-direction: row; align-items: flex-start; } }
+  .footer-brand-name { font-family: 'Epilogue', sans-serif; font-weight: 900; font-style: italic; font-size: 1.4rem; color: var(--tertiary-container); text-shadow: 2px 2px 0 #000; }
+  .footer-rights { font-size: 0.8rem; font-weight: 700; color: #888; line-height: 1.4; text-transform: uppercase; margin-top: 8px; }
+  .footer-links { list-style: none; display: flex; gap: 24px; flex-wrap: wrap; }
+  .footer-links a { color: #fff; text-decoration: none; font-weight: 800; font-size: 0.9rem; text-transform: uppercase; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--primary); }
+  .footer-socials { display: flex; gap: 12px; }
+  .social-icon { width: 48px; height: 48px; background: #fff; border: 3px solid #000; display: flex; align-items: center; justify-content: center; text-decoration: none; color: #000; box-shadow: 4px 4px 0px 0px #000; transition: all 0.1s; }
+  .social-icon:hover { transform: translate(2px,2px); background: var(--primary-container); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-left-group">
+      <a href="dashboard.php" class="logo">Annyeong</a>
+      <nav>
+        <a href="dashboard.php">Dashboard</a>
+        <a href="inventoryMng.php">Inventory</a>
+        <a href="orderMng.php" class="active">Orders</a>
+        <a href="usersMng.php">Users</a>
+      </nav>
+    </div>
+    <div class="profile-trigger-wrap">
+      <a href="#" class="profile-trigger" onclick="toggleDropdown(event)">
+        <span class="material-symbols-outlined">account_circle</span>
+      </a>
+      <div class="profile-dropdown" id="profileDropdown">
+        <div class="dropdown-user-info">
+          <span class="dropdown-username"><?php echo htmlspecialchars($username); ?></span>
+          <span class="dropdown-role"><?php echo htmlspecialchars($role); ?></span>
+        </div>
+        <a href="includes/logout.php" class="dropdown-logout">
+          <span class="material-symbols-outlined">logout</span> Log Out
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <h1 class="page-title">Orders</h1>
+
+  <?php if ($msg): ?>
+  <div class="alert-msg <?php echo $msg_type; ?>"><?php echo $msg; ?></div>
+  <?php endif; ?>
+
+  <!-- Metrics -->
+  <div class="metrics-grid">
+    <div class="metric-card pink">
+      <div class="metric-label">Total Orders</div>
+      <div class="metric-value"><?php echo $total_orders; ?></div>
+    </div>
+    <div class="metric-card yellow">
+      <div class="metric-label">Pending</div>
+      <div class="metric-value"><?php echo $pending_count; ?></div>
+    </div>
+    <div class="metric-card teal">
+      <div class="metric-label">Completed</div>
+      <div class="metric-value"><?php echo $completed_count; ?></div>
+    </div>
+    <div class="metric-card white">
+      <div class="metric-label">Total Revenue</div>
+      <div class="metric-value" style="font-size:1.75rem;">₱<?php echo number_format($total_rev, 0); ?></div>
+    </div>
+  </div>
+
+  <!-- Search & Filter -->
+  <form method="GET" action="orderMng.php" class="search-bar">
+    <div class="search-wrap">
+      <input type="text" name="search" placeholder="Search by Order ID or Customer..." value="<?php echo htmlspecialchars($search); ?>"/>
+      <span class="material-symbols-outlined search-icon">search</span>
+    </div>
+    <div class="filter-wrap">
+      <select name="status">
+        <option value="">All Status</option>
+        <option value="pending"   <?php echo $status_filter==='pending'   ? 'selected':''; ?>>Pending</option>
+        <option value="completed" <?php echo $status_filter==='completed' ? 'selected':''; ?>>Completed</option>
+        <option value="cancelled" <?php echo $status_filter==='cancelled' ? 'selected':''; ?>>Cancelled</option>
+      </select>
+      <span class="material-symbols-outlined filter-arrow">keyboard_arrow_down</span>
+    </div>
+    <button type="submit" class="btn-search">Filter</button>
+    <?php if ($search || $status_filter): ?>
+    <a href="orderMng.php" class="btn-clear">Clear</a>
+    <?php endif; ?>
+  </form>
+
+  <!-- Orders Table -->
+  <div class="table-wrap">
+    <div class="section-title">Recent Transactions</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Date</th>
+          <th>Customer</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if ($orders_result && mysqli_num_rows($orders_result) > 0):
+          while ($o = mysqli_fetch_assoc($orders_result)):
+            $badge = 'badge-' . $o['status'];
+        ?>
+        <tr>
+          <td class="order-id">#<?php echo str_pad($o['id'], 5, '0', STR_PAD_LEFT); ?></td>
+          <td class="ts"><?php echo date('M d, Y H:i', strtotime($o['order_date'])); ?></td>
+          <td class="customer-name"><?php echo htmlspecialchars($o['username']); ?></td>
+          <td class="amount">₱<?php echo number_format($o['total_amount'], 2); ?></td>
+          <td><span class="badge <?php echo $badge; ?>"><?php echo strtoupper($o['status']); ?></span></td>
+          <td>
+            <div class="action-cell">
+              <form method="POST" action="orderMng.php" class="status-form" style="display:flex;gap:0.4rem;align-items:center;">
+                <input type="hidden" name="action" value="update_status"/>
+                <input type="hidden" name="order_id" value="<?php echo $o['id']; ?>"/>
+                <select name="status">
+                  <option value="pending"   <?php echo $o['status']==='pending'   ? 'selected':''; ?>>Pending</option>
+                  <option value="completed" <?php echo $o['status']==='completed' ? 'selected':''; ?>>Completed</option>
+                  <option value="cancelled" <?php echo $o['status']==='cancelled' ? 'selected':''; ?>>Cancelled</option>
+                </select>
+                <button type="submit" class="btn-update">Update</button>
+              </form>
+              <a href="orderMng.php?delete=<?php echo $o['id']; ?>"
+                 class="btn-delete"
+                 onclick="return confirm('Delete Order #<?php echo $o['id']; ?>? This cannot be undone.')">
+                Delete
+              </a>
+            </div>
+          </td>
+        </tr>
+        <?php endwhile;
+        else: ?>
+        <tr><td colspan="6" class="no-orders">No orders found yet. Customers need to place orders first!</td></tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-brand">
+    <span class="footer-brand-name">Annyeong</span>
+    <span class="footer-rights">© 2025 Annyeong Market. All rights reserved.</span>
+  </div>
+  <ul class="footer-links">
+    <li><a href="dashboard.php">Dashboard</a></li>
+    <li><a href="inventoryMng.php">Inventory</a></li>
+    <li><a href="orderMng.php">Orders</a></li>
+    <li><a href="usersMng.php">Users</a></li>
+  </ul>
+  <div class="footer-socials">
+    <a href="#" class="social-icon"><span class="material-symbols-outlined">photo_camera</span></a>
+    <a href="#" class="social-icon"><span class="material-symbols-outlined">alternate_email</span></a>
+    <a href="#" class="social-icon"><span class="material-symbols-outlined">smart_display</span></a>
+    <a href="#" class="social-icon"><span class="material-symbols-outlined">music_note</span></a>
+  </div>
+</footer>
+
+<script>
+  function toggleDropdown(e) {
+    e.preventDefault();
+    document.getElementById('profileDropdown').classList.toggle('open');
+  }
+  document.addEventListener('click', function(e) {
+    var wrap = document.querySelector('.profile-trigger-wrap');
+    if (wrap && !wrap.contains(e.target)) document.getElementById('profileDropdown').classList.remove('open');
+  });
+</script>
+</body>
+</html>

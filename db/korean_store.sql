@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 09, 2026 at 12:52 PM
+-- Generation Time: Apr 11, 2026 at 04:37 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -45,8 +45,16 @@ CREATE TABLE `orders` (
   `user_id` int(11) NOT NULL,
   `total_amount` decimal(10,2) NOT NULL,
   `status` enum('pending','completed','cancelled') DEFAULT 'pending',
-  `order_date` timestamp NOT NULL DEFAULT current_timestamp()
+  `order_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `is_walkin` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`id`, `user_id`, `total_amount`, `status`, `order_date`, `is_walkin`) VALUES
+(1, 1, 165.00, 'completed', '2026-04-11 14:13:32', 0);
 
 -- --------------------------------------------------------
 
@@ -62,6 +70,13 @@ CREATE TABLE `order_items` (
   `price_at_purchase` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `order_items`
+--
+
+INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price_at_purchase`) VALUES
+(1, 1, 1, 3, 55.00);
+
 -- --------------------------------------------------------
 
 --
@@ -76,8 +91,16 @@ CREATE TABLE `products` (
   `category` varchar(50) DEFAULT NULL,
   `image_url` text DEFAULT NULL,
   `stock_quantity` int(11) DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `barcode` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `products`
+--
+
+INSERT INTO `products` (`id`, `name`, `description`, `price`, `category`, `image_url`, `stock_quantity`, `created_at`, `barcode`) VALUES
+(1, 'Shin Ramyun', 'Spicy Korean instant noodles', 55.00, 'Instant Food', 'https://res.cloudinary.com/ds3irzr48/image/upload/q_auto/f_auto/v1775913043/Shin_Ramyun_b4yubg.webp', 97, '2026-04-11 13:11:20', 'KST000001');
 
 -- --------------------------------------------------------
 
@@ -91,7 +114,7 @@ CREATE TABLE `users` (
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   `address` text DEFAULT NULL,
-  `role` enum('admin','customer') DEFAULT 'customer',
+  `role` enum('admin','cashier','customer') DEFAULT 'customer',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -100,7 +123,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `address`, `role`, `created_at`) VALUES
-(1, 'admin', 'admin@gmail.com', '$2y$10$bLdiHQBvISjQXDSk/n0sduX7iKXjq3PBz5KgPf3eGdtB4BpYjdbpq', NULL, 'admin', '2026-04-09 10:29:59');
+(1, 'admin', 'admin@gmail.com', '$2y$10$bLdiHQBvISjQXDSk/n0sduX7iKXjq3PBz5KgPf3eGdtB4BpYjdbpq', NULL, 'admin', '2026-04-09 02:29:59'),
+(2, 'TwoTwo', '', '$2y$10$UwlR5D0JfD5sbODAVf9Tz.z.xZYBzmKidOZhFOUbtBQPBAgivsAyi', NULL, 'customer', '2026-04-11 13:33:44'),
+(3, 'cashier1', 'cashier1@gmail.com', '$2y$10$ljbIIj4dvzbqyf9EMkON4OVYm7GHY16iDkzMxFs3ccOcVvdHBFYme', NULL, 'cashier', '2026-04-11 14:00:58');
 
 -- --------------------------------------------------------
 
@@ -146,7 +171,8 @@ ALTER TABLE `order_items`
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `barcode` (`barcode`);
 
 --
 -- Indexes for table `users`
@@ -178,25 +204,25 @@ ALTER TABLE `cart`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `wishlist`

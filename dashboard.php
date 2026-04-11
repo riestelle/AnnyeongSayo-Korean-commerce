@@ -222,14 +222,31 @@ $pending_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orde
       <div class="bar-chart-wrap">
         <div class="halftone"></div>
         <div class="bars">
-          <div class="bar pink" style="height:40%"></div>
-          <div class="bar teal" style="height:65%"></div>
-          <div class="bar yellow" style="height:45%"></div>
-          <div class="bar pink" style="height:80%"></div>
-          <div class="bar teal" style="height:55%"></div>
-          <div class="bar yellow" style="height:90%"></div>
-          <div class="bar pink" style="height:70%"></div>
-          <div class="bar teal" style="height:60%"></div>
+          <?php
+            $bar_colors = ['pink', 'teal', 'yellow'];
+            $bar_result = mysqli_query($con, "
+                SELECT total_amount FROM orders
+                WHERE status='completed'
+                ORDER BY order_date DESC
+                LIMIT 8
+            ");
+            $bar_data = [];
+            while ($row = mysqli_fetch_assoc($bar_result)) {
+                $bar_data[] = $row['total_amount'];
+            }
+            $bar_data = array_reverse($bar_data);
+            if (!empty($bar_data)):
+                $max_val = max($bar_data) ?: 1;
+                $ci = 0;
+                foreach ($bar_data as $val):
+                    $height = round(($val / $max_val) * 90);
+                    $color = $bar_colors[$ci % 3];
+          ?>
+          <div class="bar <?php echo $color; ?>" style="height:<?php echo $height; ?>%"></div>
+          <?php $ci++; endforeach;
+            else: ?>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--outline);">No completed orders yet.</div>
+          <?php endif; ?>
         </div>
         <div class="gradient-overlay"></div>
       </div>

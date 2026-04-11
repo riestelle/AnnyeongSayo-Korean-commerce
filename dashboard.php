@@ -6,14 +6,18 @@ $username = $_SESSION['username'] ?? 'Admin';
 $role     = $_SESSION['role']     ?? 'admin';
 $user_id  = $_SESSION['user_id']  ?? '00000';
 
-// Real stats from DB
-$total_orders   = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orders"))[0];
-$total_users    = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users WHERE role='customer'"))[0];
-$total_products = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM products"))[0];
-$total_revenue_row = mysqli_fetch_row(mysqli_query($con, "SELECT SUM(total_amount) FROM orders WHERE status='completed'"));
-$total_revenue  = $total_revenue_row[0] ?? 0;
+// Real stats from DB — separated by order type
+$total_orders        = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orders WHERE is_walkin = 0"))[0];
+$total_walkin_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orders WHERE is_walkin = 1"))[0];
+$total_users         = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users WHERE role='customer'"))[0];
+$total_products      = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM products"))[0];
 
-// Top 3 selling products
+$online_revenue_row  = mysqli_fetch_row(mysqli_query($con, "SELECT SUM(total_amount) FROM orders WHERE status='completed' AND is_walkin = 0"));
+$walkin_revenue_row  = mysqli_fetch_row(mysqli_query($con, "SELECT SUM(total_amount) FROM orders WHERE status='completed' AND is_walkin = 1"));
+$total_revenue       = $online_revenue_row[0] ?? 0;
+$walkin_revenue      = $walkin_revenue_row[0] ?? 0;
+
+// Top 3 selling products (all orders)
 $top_products_result = mysqli_query($con, "
     SELECT p.name, p.price, p.image_url, SUM(oi.quantity) AS sold
     FROM order_items oi
@@ -23,19 +27,19 @@ $top_products_result = mysqli_query($con, "
     LIMIT 3
 ");
 
-// Top 4 customers by spend
+// Top 4 online customers by spend (exclude walk-in ghost orders)
 $top_customers_result = mysqli_query($con, "
     SELECT u.id, u.username, SUM(o.total_amount) AS total_spent
     FROM orders o
     JOIN users u ON o.user_id = u.id
-    WHERE o.status = 'completed'
+    WHERE o.status = 'completed' AND o.is_walkin = 0
     GROUP BY u.id
     ORDER BY total_spent DESC
     LIMIT 4
 ");
 
-// Pending orders count
-$pending_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orders WHERE status='pending'"))[0];
+// Pending orders count (online only — walk-ins are auto-completed)
+$pending_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orders WHERE status='pending' AND is_walkin = 0"))[0];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -212,10 +216,16 @@ $pending_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orde
           <p class="subtitle">Completed Orders Only</p>
         </div>
         <div style="text-align:right;">
-          <div class="revenue-amount">₱<?php echo number_format($total_revenue, 2); ?></div>
-          <div class="revenue-badge">
-            <span class="material-symbols-outlined">shopping_bag</span>
-            <?php echo $total_orders; ?> Total Orders
+          <div class="revenue-amount">₱<?php echo number_format($total_revenue + $walkin_revenue, 2); ?></div>
+          <div class="revenue-badge" style="gap:12px;">
+            <span style="display:flex;align-items:center;gap:4px;">
+              <span class="material-symbols-outlined">shopping_bag</span>
+              Online: ₱<?php echo number_format($total_revenue, 2); ?>
+            </span>
+            <span style="display:flex;align-items:center;gap:4px;">
+              <span class="material-symbols-outlined">storefront</span>
+              Walk-in: ₱<?php echo number_format($walkin_revenue, 2); ?>
+            </span>
           </div>
         </div>
       </div>
@@ -223,32 +233,34 @@ $pending_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orde
         <div class="halftone"></div>
         <div class="bars">
           <?php
-            $bar_colors = ['pink', 'teal', 'yellow'];
             $bar_result = mysqli_query($con, "
-                SELECT total_amount FROM orders
+                SELECT total_amount, is_walkin FROM orders
                 WHERE status='completed'
                 ORDER BY order_date DESC
                 LIMIT 8
             ");
             $bar_data = [];
             while ($row = mysqli_fetch_assoc($bar_result)) {
-                $bar_data[] = $row['total_amount'];
+                $bar_data[] = ['amount' => $row['total_amount'], 'walkin' => $row['is_walkin']];
             }
             $bar_data = array_reverse($bar_data);
             if (!empty($bar_data)):
-                $max_val = max($bar_data) ?: 1;
-                $ci = 0;
-                foreach ($bar_data as $val):
-                    $height = round(($val / $max_val) * 90);
-                    $color = $bar_colors[$ci % 3];
+                $max_val = max(array_column($bar_data, 'amount')) ?: 1;
+                foreach ($bar_data as $entry):
+                    $height = round(($entry['amount'] / $max_val) * 90);
+                    $color = $entry['walkin'] ? 'yellow' : 'pink';
           ?>
-          <div class="bar <?php echo $color; ?>" style="height:<?php echo $height; ?>%"></div>
-          <?php $ci++; endforeach;
+          <div class="bar <?php echo $color; ?>" style="height:<?php echo $height; ?>%" title="<?php echo $entry['walkin'] ? 'Walk-in' : 'Online'; ?>: ₱<?php echo number_format($entry['amount'], 2); ?>"></div>
+          <?php endforeach;
             else: ?>
           <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--outline);">No completed orders yet.</div>
           <?php endif; ?>
         </div>
         <div class="gradient-overlay"></div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:10px;font-size:0.75rem;font-weight:700;">
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;background:var(--primary);border:2px solid #000;display:inline-block;"></span> ONLINE</span>
+        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;background:var(--tertiary-container);border:2px solid #000;display:inline-block;"></span> WALK-IN</span>
       </div>
     </section>
 
@@ -320,8 +332,8 @@ $pending_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orde
         <div class="halftone"></div>
         <div class="metric-inner">
           <div class="metric-label">
-            <span class="material-symbols-outlined">shopping_cart</span>
-            TOTAL ORDERS
+            <span class="material-symbols-outlined">shopping_bag</span>
+            ONLINE ORDERS
           </div>
           <div class="metric-value neon-stroke"><?php echo $total_orders; ?></div>
           <div class="metric-sub">
@@ -334,17 +346,30 @@ $pending_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orde
         <div class="halftone"></div>
         <div class="metric-inner">
           <div class="metric-label">
-            <span class="material-symbols-outlined">group</span>
-            TOTAL CUSTOMERS
+            <span class="material-symbols-outlined">storefront</span>
+            WALK-IN ORDERS
           </div>
-          <div class="metric-value neon-stroke"><?php echo $total_users; ?></div>
+          <div class="metric-value neon-stroke"><?php echo $total_walkin_orders; ?></div>
+          <div class="metric-sub">
+            <span class="material-symbols-outlined">payments</span>
+            &#8369;<?php echo number_format($walkin_revenue, 2); ?> REVENUE
+          </div>
+        </div>
+      </div>
+      <div class="metric-card kinetic-shadow" style="background:#fff;">
+        <div class="halftone"></div>
+        <div class="metric-inner">
+          <div class="metric-label">
+            <span class="material-symbols-outlined">group</span>
+            ONLINE CUSTOMERS
+          </div>
+          <div class="metric-value neon-stroke" style="font-size:3rem;"><?php echo $total_users; ?></div>
           <div class="metric-sub">
             <span class="material-symbols-outlined">inventory_2</span>
             <?php echo $total_products; ?> PRODUCTS LISTED
           </div>
         </div>
       </div>
-    </div>
 
     <div class="hub-card kinetic-shadow">
       <div class="hub-title">DASHBOARD HUB</div>

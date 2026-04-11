@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
     if (!empty($items) && $total > 0) {
         $guest_id = 1;
-        mysqli_query($con, "INSERT INTO orders (user_id, total_amount, status) VALUES ($guest_id, $total, 'completed')");
+        mysqli_query($con, "INSERT INTO orders (user_id, total_amount, status, is_walkin) VALUES ($guest_id, $total, 'completed', 1)");
         $order_id = mysqli_insert_id($con);
         foreach ($items as $item) {
             mysqli_query($con, "INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase) VALUES ($order_id, {$item['id']}, {$item['qty']}, {$item['price']})");

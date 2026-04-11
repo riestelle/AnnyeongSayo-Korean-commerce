@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 11, 2026 at 04:37 PM
+-- Generation Time: Apr 11, 2026 at 04:47 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -54,7 +54,7 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `user_id`, `total_amount`, `status`, `order_date`, `is_walkin`) VALUES
-(1, 1, 165.00, 'completed', '2026-04-11 14:13:32', 0);
+(1, 1, 165.00, 'completed', '2026-04-11 14:13:32', 1);
 
 -- --------------------------------------------------------
 

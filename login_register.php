@@ -8,16 +8,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Login and Register</title>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,400;0,700;0,900;1,400;1,900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap"
-        rel="stylesheet"
-    />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,400;0,700;0,900;1,400;1,900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
     <?php if ($loggedOut): ?>
     <style>
@@ -65,7 +60,7 @@
 
         html, body {
             height: 100%;
-            overflow: hidden; 
+            overflow: auto; 
         }
 
         body {
@@ -95,7 +90,6 @@
             box-shadow: var(--shadow-small);
         }
 
-        /* header */
         header {
             position: fixed;
             top: 0;
@@ -108,10 +102,9 @@
             padding: 14px 32px;
             display: flex;
             align-items: center;
-            justify-content: center; /* name centered */
+            justify-content: center; 
         }
 
-        /* Brand name styled like "SEOUL POP" from the reference image */
         .brand-name {
             font-family: 'Epilogue', sans-serif;
             font-size: 2.2rem;
@@ -125,7 +118,6 @@
             user-select: none;
         }
 
-        /* MAIN  (fills remaining height) */
         main {
             flex: 1;
             display: flex;
@@ -133,11 +125,12 @@
             justify-content: center;
             padding: 24px;
             padding-top: 100px;
+            padding-bottom: 60px;
             position: relative;
-            overflow: hidden;
+            background-image: radial-gradient(#000000 1px, transparent 0);
+            background-size: 8px 8px;
         }
 
-        /* Background floating decorative elements*/
         .bg-decor {
             position: absolute;
             inset: 0;
@@ -157,13 +150,11 @@
             padding: 6px 10px;
         }
 
-        /* Coloured square blocks */
         .bg-block {
             position: absolute;
             border: 3px solid #000000;
         }
 
-        /* Speech / bubble text tags */
         .bubble-tag {
             position: absolute;
             border: 3px solid #000000;
@@ -177,7 +168,6 @@
             white-space: nowrap;
         }
 
-        /* Individual decorative pieces */
         .decor-yellow-tl {
             top: 14%;
             left: 5%;
@@ -210,7 +200,7 @@
             left: 4%;
             width: 85px;
             height: 85px;
-            background: #a8f0b0;
+            background: #006668;
             transform: rotate(10deg);
         }
 
@@ -234,7 +224,56 @@
             border: 3px solid #000;
         }
 
-        /* Bubble text stickers */
+        .decor-dot-mid-l {
+            top: 55%;
+            left: 6%;
+            width: 20px;
+            height: 20px;
+            background: #fdd828;
+            border-radius: 50%;
+            border: 3px solid #000;
+        }
+        
+        .decor-dot-mid-r {
+            top: 30%;
+            right: 2%;
+            width: 18px;
+            height: 18px;
+            background: #b70048;
+            border-radius: 50%;
+            border: 3px solid #000;
+        }
+
+        .decor-dot-bot-l {
+            bottom: 10%;
+            left: 5%;
+            width: 22px;
+            height: 22px;
+            background: #52f9fc;
+            border-radius: 50%;
+            border: 3px solid #000;
+        }
+        
+        .decor-dot-bot-r {
+            top: 50%;
+            right: 5%;
+            width: 16px;
+            height: 16px;
+            background: #a8f0b0;
+            border-radius: 50%;
+            border: 3px solid #000;
+        }
+        
+        .decor-dot-top-c {
+            bottom: 60%;
+            left: 1%;
+            width: 14px;
+            height: 14px;
+            background: #ff7290;
+            border-radius: 50%;
+            border: 3px solid #000;
+        }
+
         .tag-secure {
             top: 22%;
             left: 6%;
@@ -253,18 +292,9 @@
             transform: rotate(4deg);
         }
 
-        .tag-members-only {
-            top: 15%;
-            right: 15%;
-            background: var(--color-tertiary-container);
-            color: #000;
-            box-shadow: 3px 3px 0 #000;
-            transform: rotate(-6deg);
-        }
-
         .tag-verified {
             bottom: 25%;
-            left: 10%;
+            left: 2%;
             background: #a8f0b0;
             color: #000;
             box-shadow: 3px 3px 0 #000;
@@ -277,28 +307,27 @@
             background: #ff7290;
             color: #000;
             box-shadow: 3px 3px 0 #000;
-            transform: rotate(-2deg);
+            transform: rotate(-15deg);
         }
 
         .tag-authorized {
             bottom: 38%;
-            right: 3%;
+            right: 1%;
             background: var(--color-tertiary-container);
             color: #000;
             box-shadow: 3px 3px 0 #000;
-            transform: rotate(3deg);
+            transform: rotate(-25deg);
         }
 
         .tag-need-help {
-            top: 5%;
-            right: 28%;
+            top: 35%;
+            right: 3%;
             background: #fff;
             color: #000;
             box-shadow: 3px 3px 0 #000;
-            transform: rotate(-1deg);
+            transform: rotate(15deg);
         }
 
-        /* comic grid */
         .comic-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -315,7 +344,6 @@
             }
         }
 
-        /* left panel */
         .left-panel {
             position: relative;
             overflow: hidden;
@@ -396,7 +424,6 @@
             font-size: 0.9rem;
         }
 
-        /* right panel */
         .right-panel {
             display: flex;
             flex-direction: column;
@@ -405,7 +432,6 @@
             position: relative;
         }
 
-        /* Header card */
         .form-header-card {
             position: relative;
             background: var(--color-primary-container);
@@ -447,7 +473,6 @@
             color: rgba(77, 0, 26, 0.8);
         }
 
-        /* Form card */
         .form-card {
             position: relative;
             background: var(--color-surface-container-lowest);
@@ -458,7 +483,6 @@
             overflow: visible;
         }
 
-        /* Form elements */
         .form-group {
             margin-bottom: 20px;
             position: relative;
@@ -498,7 +522,6 @@
             color: var(--color-outline-variant);
         }
 
-        /* Submit button */
         .btn-submit {
             width: 100%;
             background: var(--color-primary);
@@ -526,7 +549,6 @@
             box-shadow: none;
         }
 
-        /* Register link */
         .register-link-row {
             margin-top: 24px;
             padding-top: 20px;
@@ -549,7 +571,6 @@
             color: var(--color-secondary);
         }
 
-        /* Floating mascot sticker on form card */
         .floating-sticker {
             position: absolute;
             bottom: -20px;
@@ -569,7 +590,6 @@
             display: block;
         }
 
-        /* Logout success popup */
         .popup-toast {
             position: fixed;
             top: 90px;
@@ -598,7 +618,6 @@
             display: block;                 
         }
 
-        /*footer*/
         footer {
             background-color: #000000;
             border-top: 4px solid #000000;
@@ -609,7 +628,6 @@
             gap: 24px;
         }
 
-        /* Left: brand + rights */
         .footer-brand {
             display: flex;
             flex-direction: column;
@@ -618,14 +636,13 @@
         }
 
         .footer-brand-name {
-            font-family: var(--font-headline);
+            font-family: 'Epilogue', sans-serif;
+            font-size: 1.5rem;
             font-weight: 900;
             font-style: italic;
-            font-size: 1.2rem;
-            color: var(--color-primary);
-            text-transform: uppercase;
-            letter-spacing: -0.02em;
-            text-shadow: 2px 2px 0 var(--color-secondary);
+            letter-spacing: -0.05em;
+            text-shadow: 3px 3px 0px #000;
+            color: #fdd828;
         }
 
         .footer-rights {
@@ -637,7 +654,6 @@
             color: rgba(255, 255, 255, 0.5);
         }
 
-        /* Center: quick links */
         .footer-links {
             display: flex;
             gap: 28px;
@@ -664,7 +680,6 @@
             text-decoration-color: var(--color-tertiary-container);
         }
 
-        /* Right: social icons */
         .footer-socials {
             display: flex;
             gap: 14px;
@@ -723,17 +738,23 @@
             <div class="bg-block decor-green-bl"></div>
 
             <!-- Small dots -->
-            <div class="bg-block decor-dot-tl" style="border-radius:50%;"></div>
-            <div class="bg-block decor-dot-br" style="border-radius:50%;"></div>
+            <!-- Small dots -->
+             <div class="bg-block decor-dot-tl"></div>
+             <div class="bg-block decor-dot-br"></div>
+             <div class="bg-block decor-dot-mid-l"></div>
+             <div class="bg-block decor-dot-mid-r"></div>
+             <div class="bg-block decor-dot-bot-l"></div>
+             <div class="bg-block decor-dot-bot-r"></div>
+             <div class="bg-block decor-dot-top-c"></div>
+            
 
             <!-- Bubble text tags -->
             <span class="bubble-tag tag-secure">Secure</span>
             <span class="bubble-tag tag-top-secret">Fresh!</span>
-            <span class="bubble-tag tag-members-only">Members Only</span>
             <span class="bubble-tag tag-verified">✓ Verified</span>
             <span class="bubble-tag tag-k-pop">K-Pop Zone</span>
             <span class="bubble-tag tag-authorized">Authorized ✦</span>
-            <span class="bubble-tag tag-need-help">Need Help? ↗</span>
+            <span class="bubble-tag tag-need-help">Need Help?</span>
 
         </div>
 

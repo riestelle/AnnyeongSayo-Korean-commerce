@@ -720,7 +720,7 @@ footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px;
   <header>
   <div class="header-inner">
     <div class="header-left-group">
-      <a href="login_register.php" class="logo">Annyeong</a>
+      <a href="login_register.php" class="logo">Annyeong'Sayo</a>
       <nav>
         <a href="userDashboard.php">Dashboard</a>
         <a href="wishlistCart.php" class="active">Wishlist</a>

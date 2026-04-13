@@ -72,7 +72,7 @@ $total_rev       = $total_rev_row[0] ?? 0;
     --error: #b31b25; --error-container: #fb5151; --on-error: #ffefee;
     --font-headline: 'Epilogue', sans-serif; --font-body: 'Plus Jakarta Sans', sans-serif;
   }
-  body { background: var(--background); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--on-background); min-height: 100vh; display: flex; flex-direction: column; }
+  body { background: var(--background); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--on-background); min-height: 100vh; display: flex; flex-direction: column; background-image: radial-gradient(#000000 1px, transparent 0); background-size: 8px 8px; }
   .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; font-size: 24px; line-height: 1; vertical-align: middle; user-select: none; display:inline-block; }
   header { background: #fff; width: 100%; border-bottom: 4px solid #000; position: sticky; top: 0; z-index: 50; }
   .header-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 1rem 2.5rem; }
@@ -114,10 +114,11 @@ $total_rev       = $total_rev_row[0] ?? 0;
   .search-bar { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
   .search-wrap { position: relative; flex-grow: 1; }
   .search-wrap input { width: 100%; background: #fff; border: 4px solid #000; padding: 0.75rem 0.75rem 0.75rem 3rem; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 0.875rem; outline: none; }
-  .search-wrap input:focus { border-color: var(--primary); }
+  .search-wrap input:focus { border-color: #000; box-shadow: 0 0 0 4px #fdd828; }
   .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); }
   .filter-wrap { position: relative; min-width: 160px; }
   .filter-wrap select { width: 100%; background: #fff; border: 4px solid #000; padding: 0.75rem 2.5rem 0.75rem 0.75rem; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 0.875rem; appearance: none; cursor: pointer; outline: none; }
+  .filter-wrap select:focus { box-shadow: 0 0 0 4px #fdd828; }
   .filter-arrow { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); pointer-events: none; }
   .btn-search { background: #000; color: #fff; border: 4px solid #000; padding: 0.75rem 1.5rem; font-family: 'Epilogue', serif; font-weight: 900; font-size: 0.875rem; text-transform: uppercase; cursor: pointer; }
   .btn-search:hover { background: var(--primary); }
@@ -147,16 +148,18 @@ $total_rev       = $total_rev_row[0] ?? 0;
   .btn-delete:hover { background: var(--error); color: var(--on-error); }
   .no-orders { padding: 3rem; text-align: center; font-weight: 700; color: var(--outline); font-style: italic; }
   /* Footer */
-  footer { background: #000; border-top: 4px solid #000; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 24px; margin-top: auto; }
-  @media (min-width: 768px) { footer { flex-direction: row; align-items: flex-start; } }
-  .footer-brand-name { font-family: 'Epilogue', sans-serif; font-weight: 900; font-style: italic; font-size: 1.4rem; color: var(--tertiary-container); text-shadow: 2px 2px 0 #000; }
-  .footer-rights { font-size: 0.8rem; font-weight: 700; color: #888; line-height: 1.4; text-transform: uppercase; margin-top: 8px; }
-  .footer-links { list-style: none; display: flex; gap: 24px; flex-wrap: wrap; }
-  .footer-links a { color: #fff; text-decoration: none; font-weight: 800; font-size: 0.9rem; text-transform: uppercase; transition: color 0.2s; }
-  .footer-links a:hover { color: var(--primary); }
-  .footer-socials { display: flex; gap: 12px; }
-  .social-icon { width: 48px; height: 48px; background: #fff; border: 3px solid #000; display: flex; align-items: center; justify-content: center; text-decoration: none; color: #000; box-shadow: 4px 4px 0px 0px #000; transition: all 0.1s; }
-  .social-icon:hover { transform: translate(2px,2px); background: var(--primary-container); }
+  footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .footer-brand { display: flex; flex-direction: column; gap: 4px; }
+    .footer-brand-name { font-family: 'Epilogue', sans-serif; font-size: 1.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #fdd828; text-shadow: 3px 3px 0px #000; }
+    .footer-rights { font-family: var(--font-body); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); }
+    .footer-links { list-style: none; display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links li a { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.15s; display: inline-block; }
+    .footer-links li a:hover { color: var(--primary); }
+    .footer-socials { display: flex; gap: 10px; }
+    .social-icon { width: 36px; height: 36px; border: 2px solid rgba(255,255,255,0.3); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.7); cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s; text-decoration: none; }
+    .social-icon:hover { border-color: var(--primary); color: #fff; background: rgba(183,0,72,0.2); }
+    .social-icon .material-symbols-outlined { font-size: 1.1rem; }
+    .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 24px; line-height: 1; letter-spacing: normal; display: inline-block; vertical-align: middle; }
 </style>
 </head>
 <body>
@@ -223,7 +226,7 @@ $total_rev       = $total_rev_row[0] ?? 0;
       <span class="material-symbols-outlined search-icon">search</span>
     </div>
     <div class="filter-wrap">
-      <select name="status">
+      <select name="status" onchange="this.form.submit()">
         <option value="">All Status</option>
         <option value="pending"   <?php echo $status_filter==='pending'   ? 'selected':''; ?>>Pending</option>
         <option value="completed" <?php echo $status_filter==='completed' ? 'selected':''; ?>>Completed</option>
@@ -231,8 +234,7 @@ $total_rev       = $total_rev_row[0] ?? 0;
       </select>
       <span class="material-symbols-outlined filter-arrow">keyboard_arrow_down</span>
     </div>
-    <button type="submit" class="btn-search">Filter</button>
-    <?php if ($search || $status_filter): ?>
+    <?php if ($search): ?>
     <a href="orderMng.php" class="btn-clear">Clear</a>
     <?php endif; ?>
   </form>
@@ -294,7 +296,7 @@ $total_rev       = $total_rev_row[0] ?? 0;
 <footer>
   <div class="footer-brand">
     <span class="footer-brand-name">Annyeong</span>
-    <span class="footer-rights">© 2025 Annyeong Market. All rights reserved.</span>
+    <span class="footer-rights">© 2025 Annyeong Market.<br/>All rights reserved.</span>
   </div>
   <ul class="footer-links">
     <li><a href="dashboard.php">Dashboard</a></li>

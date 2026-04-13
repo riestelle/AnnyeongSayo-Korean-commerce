@@ -859,6 +859,16 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="username">Input Email</label>
+                        <input
+                            id="email"
+                            name="email"
+                            type="text"
+                            placeholder="you@example.com"
+                        />
+                    </div>
+
+                    <div class="form-group">
                         <label for="password">Create Password</label>
                         <input
                             id="password"

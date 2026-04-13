@@ -694,9 +694,9 @@ footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px;
   <header>
   <div class="header-inner">
     <div class="header-left-group">
-      <a href="dashboard.php" class="logo">Annyeong</a>
+      <a href="login_register.php" class="logo">Annyeong</a>
       <nav>
-        <a href="dashboard.php">Dashboard</a>
+        <a href="userDashboard.php">Dashboard</a>
         <a href="wishlistCart.php" class="active">Wishlist</a>
         <a href="myOrders.php">My Orders</a>
       </nav>
@@ -785,12 +785,11 @@ footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px;
             </div>
           </div>
         </div>
-        <?php
-          endforeach;
-        else :
-        ?>
+        <?php endforeach; else: ?>
         <p style="padding:2rem; font-weight:700; text-align:center;">Your wishlist is empty.</p>
         <?php endif; ?>
+      </div><!-- end .product-list -->
+
       <!-- Sidebar -->
       <aside class="sidebar">
         <div class="command-center kinetic-border">

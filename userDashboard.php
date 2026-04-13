@@ -932,9 +932,9 @@ footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px;
 <header>
   <div class="header-inner">
     <div class="header-left-group">
-      <a href="dashboard.php" class="logo">Annyeong</a>
+      <a href="login_register.php" class="logo">Annyeong</a>
       <nav>
-        <a href="dashboard.php" class="active">Dashboard</a>
+        <a href="#" class="active">Dashboard</a>
         <a href="wishlistCart.php">Wishlist</a>
         <a href="myOrders.php">My Orders</a>
       </nav>

@@ -71,7 +71,7 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
     --outline: #757778; --error: #b31b25; --error-container: #fb5151; --on-error: #ffefee;
     --font-headline: 'Epilogue', sans-serif; --font-body: 'Plus Jakarta Sans', sans-serif;
   }
-  body { background: var(--background); color: var(--on-background); font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+  body { background: var(--background); color: var(--on-background); font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; display: flex; flex-direction: column; background-image: radial-gradient(#000000 1px, transparent 0); background-size: 8px 8px; }
   .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; font-size: 24px; line-height: 1; vertical-align: middle; user-select: none; display: inline-block; }
   header { background: #fff; width: 100%; border-bottom: 4px solid #000; position: sticky; top: 0; z-index: 50; }
   .header-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 1rem 2.5rem; }
@@ -103,15 +103,19 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
   .metric-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: rgba(0,0,0,0.6); margin-bottom: 0.5rem; }
   .metric-value { font-family: 'Epilogue', serif; font-size: 2.5rem; font-weight: 900; font-style: italic; -webkit-text-stroke: 1px #000; }
   .alert-msg { padding: 1rem; border: 2px solid #000; font-weight: 700; margin-bottom: 1.5rem; }
-  .alert-msg.success { background: var(--secondary-container); color: var(--on-secondary-container); }
-  .alert-msg.info { background: var(--tertiary-container); color: var(--on-tertiary-container); }
-  .alert-msg.error { background: var(--error-container); color: var(--on-error); }
-  .search-bar { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .alert-msg.success { background: #d4edda; color: #1a5c2a; }
+  .alert-msg.info    { background: #e2e3e5; color: #383d41; }
+  .alert-msg.error   { background: #f8d7da; color: #721c24; }
+  .alert-toast {position: fixed;top: 5rem;left: 50%;transform: translateX(-50%);z-index: 9999;padding: 1rem 1.5rem;border: 3px solid #000;box-shadow: 6px 6px 0px 0px #000;font-weight: 700;font-size: 0.95rem;max-width: 360px;width: max-content;opacity: 1;transition: opacity 0.5s ease;}
+  .alert-toast.success { background: #d4edda; color: #1a5c2a; }
+  .alert-toast.info    { background: #e2e3e5; color: #383d41; }
+  .alert-toast.error   { background: #f8d7da; color: #721c24; }
+  .search-bar { display: flex; flex-direction: row; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: nowrap; align-items: center; }
   .search-wrap { position: relative; flex-grow: 1; }
   .search-wrap input { width: 100%; background: #fff; border: 4px solid #000; padding: 0.75rem 0.75rem 0.75rem 3rem; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 0.875rem; outline: none; }
   .search-wrap input:focus { border-color: var(--primary); }
   .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); }
-  .filter-wrap { position: relative; min-width: 160px; }
+  .filter-wrap { position: relative; width: 220px; flex-shrink: 0; }
   .filter-wrap select { width: 100%; background: #fff; border: 4px solid #000; padding: 0.75rem 2.5rem 0.75rem 0.75rem; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 0.875rem; appearance: none; cursor: pointer; outline: none; }
   .filter-arrow { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); pointer-events: none; }
   .btn-search { background: #000; color: #fff; border: 4px solid #000; padding: 0.75rem 1.5rem; font-family: 'Epilogue', serif; font-weight: 900; font-size: 0.875rem; text-transform: uppercase; cursor: pointer; }
@@ -119,6 +123,8 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
   .btn-clear { background: #fff; color: #000; border: 4px solid #000; padding: 0.75rem 1rem; font-weight: 700; cursor: pointer; text-decoration: none; font-size: 0.875rem; display: inline-block; }
   .table-wrap { background: #fff; border: 4px solid #000; overflow-x: auto; }
   .section-title { padding: 1.25rem 1.5rem; background: #000; color: #fff; font-family: 'Epilogue', serif; font-weight: 900; font-style: italic; font-size: 1.25rem; text-transform: uppercase; letter-spacing: -0.03em; }
+  .search-wrap input:focus { border-color: #000; box-shadow: 0 0 0 4px #fdd828; }
+  .filter-wrap select:focus { box-shadow: 0 0 0 4px #fdd828; }
   table { width: 100%; border-collapse: collapse; min-width: 600px; }
   thead tr { background: var(--surface-container-highest); border-bottom: 4px solid #000; }
   thead th { padding: 1rem; text-align: left; font-weight: 900; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
@@ -140,17 +146,18 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
   .btn-delete:hover { background: var(--error); }
   .you-badge { background: var(--tertiary-container); color: var(--on-tertiary-container); font-size: 0.65rem; font-weight: 900; border: 1px solid #000; padding: 0.1rem 0.4rem; vertical-align: middle; }
   .no-users { padding: 3rem; text-align: center; font-weight: 700; color: var(--outline); font-style: italic; }
-  footer { background: #000; border-top: 4px solid #000; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 24px; margin-top: auto; }
-  @media (min-width: 768px) { footer { flex-direction: row; align-items: flex-start; } }
-  .footer-brand-name { font-family: 'Epilogue', sans-serif; font-weight: 900; font-style: italic; font-size: 1.4rem; color: var(--tertiary-container); text-shadow: 2px 2px 0 #000; }
-  .footer-rights { font-size: 0.8rem; font-weight: 700; color: #888; line-height: 1.4; text-transform: uppercase; margin-top: 8px; }
-  .footer-links { list-style: none; display: flex; gap: 24px; flex-wrap: wrap; }
-  .footer-links a { color: #fff; text-decoration: none; font-weight: 800; font-size: 0.9rem; text-transform: uppercase; transition: color 0.2s; }
-  .footer-links a:hover { color: var(--primary); }
-  .footer-socials { display: flex; gap: 12px; }
-  .social-icon { width: 48px; height: 48px; background: #fff; border: 3px solid #000; display: flex; align-items: center; justify-content: center; text-decoration: none; color: #000; box-shadow: 4px 4px 0px 0px #000; transition: all 0.1s; }
-  .social-icon:hover { transform: translate(2px,2px); background: var(--primary-container); }
-  .badge-cashier { background: var(--tertiary-container); color: var(--on-tertiary-container); }
+  footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .footer-brand { display: flex; flex-direction: column; gap: 4px; }
+    .footer-brand-name { font-family: 'Epilogue', sans-serif; font-size: 1.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #fdd828; text-shadow: 3px 3px 0px #000; }
+    .footer-rights { font-family: var(--font-body); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); }
+    .footer-links { list-style: none; display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links li a { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.15s; display: inline-block; }
+    .footer-links li a:hover { color: var(--primary); }
+    .footer-socials { display: flex; gap: 10px; }
+    .social-icon { width: 36px; height: 36px; border: 2px solid rgba(255,255,255,0.3); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.7); cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s; text-decoration: none; }
+    .social-icon:hover { border-color: var(--primary); color: #fff; background: rgba(183,0,72,0.2); }
+    .social-icon .material-symbols-outlined { font-size: 1.1rem; }
+    .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 24px; line-height: 1; letter-spacing: normal; display: inline-block; vertical-align: middle; }
 </style>
 </head>
 <body>
@@ -187,7 +194,7 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
   <h1 class="page-title">Users</h1>
 
   <?php if ($msg): ?>
-  <div class="alert-msg <?php echo $msg_type; ?>"><?php echo $msg; ?></div>
+  <div class="alert-toast <?php echo $msg_type; ?>" id="alertToast"><?php echo $msg; ?></div>
   <?php endif; ?>
 
   <div class="metrics-grid">
@@ -211,7 +218,7 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
       <span class="material-symbols-outlined search-icon">search</span>
     </div>
     <div class="filter-wrap">
-      <select name="role_filter">
+     <select name="role_filter" onchange="this.form.submit()">
         <option value="">All Roles</option>
         <option value="customer" <?php echo $u['role']==='customer' ? 'selected':''; ?>>Customer</option>
         <option value="cashier"  <?php echo $u['role']==='cashier'  ? 'selected':''; ?>>Cashier</option>
@@ -219,8 +226,7 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
       </select>
       <span class="material-symbols-outlined filter-arrow">keyboard_arrow_down</span>
     </div>
-    <button type="submit" class="btn-search">Filter</button>
-    <?php if ($search || $role_filter): ?>
+    <?php if ($search): ?>
     <a href="usersMng.php" class="btn-clear">Clear</a>
     <?php endif; ?>
   </form>
@@ -288,7 +294,7 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
 <footer>
   <div class="footer-brand">
     <span class="footer-brand-name">Annyeong</span>
-    <span class="footer-rights">© 2025 Annyeong Market. All rights reserved.</span>
+    <span class="footer-rights">© 2025 Annyeong Market.<br/>All rights reserved.</span>
   </div>
   <ul class="footer-links">
     <li><a href="dashboard.php">Dashboard</a></li>
@@ -313,6 +319,14 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
     var wrap = document.querySelector('.profile-trigger-wrap');
     if (wrap && !wrap.contains(e.target)) document.getElementById('profileDropdown').classList.remove('open');
   });
+
+  var toast = document.getElementById('alertToast');
+  if (toast) {
+    setTimeout(function() {
+      toast.style.opacity = '0';
+      setTimeout(function() { toast.style.display = 'none'; }, 500);
+    }, 3000);
+  }
 </script>
 </body>
 </html>

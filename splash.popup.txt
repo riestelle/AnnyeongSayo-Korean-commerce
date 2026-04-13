@@ -1,21 +1,19 @@
 <?php
-//  BACKEND INTEGRATION BLOCK
-//  backend should populate these before this
-//  file renders. Move this to a controller/init file.
+// ══════════════════════════════════════════════════
+//  ⚠️  TEST FILE — splash always shows, no login needed.
+//  Delete this file before going live. Use userDashboard.php instead.
+// ══════════════════════════════════════════════════
 
 // 1. Base path for all product images
 define('IMG_PATH', '/assets/images/products/');
 
-// 2. Session / auth variables (already set by your auth middleware)
-// $username, $role, $user_id — already used below in the header dropdown.
+// Dummy session vars so the header renders without errors
+$username = 'TestUser';
+$role     = 'Customer';
+$user_id  = 0;
 
-// ── Splash popup: show once per login ──────────────────────
-// Your login script should set $_SESSION['just_logged_in'] = true;
-// right after a successful authentication. We read + immediately
-// clear it here so it only fires on the very first dashboard load.
-$show_splash = !empty($_SESSION['just_logged_in']);
-unset($_SESSION['just_logged_in']);
-// ────────────────────────────────────────────────────────────
+// Force the splash to always show in this test file
+$show_splash = true;
 
 // 3. Product query — replace with your actual DB call:
 // Example:
@@ -28,7 +26,7 @@ $products = []; // ← remove this line once DB query is wired up
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Annyeong'Sayo Dashboard</title>
+<title>POP! SHOP - Web Shop Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Epilogue:ital,wght@0,900;1,900&family=Noto+Sans+KR:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <style>
@@ -920,6 +918,19 @@ main {
 }
 .modal-cart-btn:hover { background: var(--tertiary-fixed); color: #000; }
 
+footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .footer-brand { display: flex; flex-direction: column; gap: 4px; }
+    .footer-brand-name { font-family: 'Epilogue', sans-serif; font-size: 1.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #fdd828; text-shadow: 3px 3px 0px #000; }
+    .footer-rights { font-family: var(--font-body); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); }
+    .footer-links { list-style: none; display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links li a { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.15s; display: inline-block; }
+    .footer-links li a:hover { color: var(--primary); }
+    .footer-socials { display: flex; gap: 10px; }
+    .social-icon { width: 36px; height: 36px; border: 2px solid rgba(255,255,255,0.3); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.7); cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s; text-decoration: none; }
+    .social-icon:hover { border-color: var(--primary); color: #fff; background: rgba(183,0,72,0.2); }
+    .social-icon .material-symbols-outlined { font-size: 1.1rem; }
+    .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 24px; line-height: 1; letter-spacing: normal; display: inline-block; vertical-align: middle; }
+
   /* ── Kpop Comic Splash ─────────────────────────────── */
   .ko-splash-backdrop { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.72); z-index:9999; align-items:center; justify-content:center; padding:1rem; animation:koFadeIn 0.3s ease; }
   .ko-splash-backdrop.open { display:flex; }
@@ -958,19 +969,7 @@ main {
   .ko-skip:hover { color:#000; }
   .ko-sticker-1 { position:absolute; top:-22px; left:20px; background:#52f9fc; border:4px solid #000; box-shadow:3px 3px 0 #000; font-family:'Bangers',cursive; font-size:0.9rem; letter-spacing:0.1em; padding:0.25rem 0.8rem; color:#000; transform:rotate(-5deg); z-index:10; }
   .ko-panel-border-top { height:8px; background:repeating-linear-gradient(90deg,#b70048 0,#b70048 20px,#fdd828 20px,#fdd828 40px,#000 40px,#000 48px,#52f9fc 48px,#52f9fc 68px); border-bottom:3px solid #000; }
-  
-  footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-    .footer-brand { display: flex; flex-direction: column; gap: 4px; }
-    .footer-brand-name { font-family: 'Epilogue', sans-serif; font-size: 1.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #fdd828; text-shadow: 3px 3px 0px #000; }
-    .footer-rights { font-family: var(--font-body); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); }
-    .footer-links { list-style: none; display: flex; gap: 20px; flex-wrap: wrap; }
-    .footer-links li a { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.15s; display: inline-block; }
-    .footer-links li a:hover { color: var(--primary); }
-    .footer-socials { display: flex; gap: 10px; }
-    .social-icon { width: 36px; height: 36px; border: 2px solid rgba(255,255,255,0.3); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.7); cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s; text-decoration: none; }
-    .social-icon:hover { border-color: var(--primary); color: #fff; background: rgba(183,0,72,0.2); }
-    .social-icon .material-symbols-outlined { font-size: 1.1rem; }
-    .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 24px; line-height: 1; letter-spacing: normal; display: inline-block; vertical-align: middle; }
+  /* ─────────────────────────────────────────────────── */
 </style>
 </head>
 <body>
@@ -980,7 +979,7 @@ main {
 <div class="ko-splash-backdrop open" id="koSplash">
   <div class="ko-overlay">
     <div class="ko-panel">
-       <div class="ko-sticker-1">신상 입고!</div>
+      <div class="ko-sticker-1">신상 입고!</div>
       <div class="ko-sticker-1" style="left:auto; right:30px; top:-22px; transform:rotate(5deg); background:#fdd828; color:#000;">LIMITED!</div>
       <button class="ko-close" onclick="closeSplash()">✕</button>
       <div class="ko-panel-border-top"></div>
@@ -1005,8 +1004,8 @@ main {
           </svg>
         </div>
         <div class="ko-bubble-wrap">
-          <div class="ko-bubble">INCOMING LOOT!</div>
-          <div class="ko-bubble ko-bubble-cyan">신규 드랍 &mdash; ZERO HOUR</div>
+          <div class="ko-bubble" style="transform:rotate(-25deg);">INCOMING LOOT!</div>
+          <div class="ko-bubble ko-bubble-cyan" style="transform:rotate(25deg);">신규 드랍 &mdash; ZERO HOUR</div>
         </div>
         <div class="ko-headline-wrap">
           <svg class="ko-zap-bg" viewBox="0 0 320 140" preserveAspectRatio="xMidYMid meet">
@@ -1038,9 +1037,9 @@ main {
 <header>
   <div class="header-inner">
     <div class="header-left-group">
-      <a href="login_register.php" class="logo">Annyeong'Sayo</a>
+      <a href="login_register.php" class="logo">Annyeong</a>
       <nav>
-        <a href="userDashboard.php" class="active">Dashboard</a>
+        <a href="#" class="active">Dashboard</a>
         <a href="wishlistCart.php">Wishlist</a>
         <a href="myOrders.php">My Orders</a>
       </nav>
@@ -1326,16 +1325,6 @@ function closeModal() {
 }
 document.getElementById('productModal').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
-});
-
-window.addEventListener('load', function() {
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('autoopen') === '1') {
-    var productId = urlParams.get('id');
-    var modal = document.getElementById('productModal');
-    if (modal) modal.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
 });
 </script>
 </body>

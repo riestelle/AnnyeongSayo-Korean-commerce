@@ -1,35 +1,61 @@
 <?php
-//  BACKEND INTEGRATION BLOCK
-//  Move this to your controller/init file.
+// Start session and include database connection
+session_start();
+require_once 'includes/db_connection.php';
 
-// 1. Base path for all product images
-define('IMG_PATH', '/assets/images/products/');
+// Base path for all product images
+define('IMG_PATH', 'https://res.cloudinary.com/ds3irzr48/image/upload/q_auto/f_auto/');
 
-// 2. Session variables — set by your auth middleware
-// $username, $role, $user_id
+// Session variables — get from session
+$username = $_SESSION['username'] ?? 'Guest';
+$role     = $_SESSION['role'] ?? 'customer';
+$user_id  = $_SESSION['user_id'] ?? null;
 
-// 3. Wishlist items query — replace with your actual DB call:
-// Example:
-//   $stmt = $pdo->prepare("
-//     SELECT w.wishlist_id, w.quantity, p.product_id, p.name, p.subtitle,
-//            p.price, p.image, p.badge
-//     FROM wishlist w
-//     JOIN products p ON p.product_id = w.product_id
-//     WHERE w.user_id = ?
-//     ORDER BY w.added_at DESC
-//   ");
-//   $stmt->execute([$user_id]);
-//   $wishlist_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-$wishlist_items = []; // ← remove once DB query is wired up
+// Check if user is logged in
+if (!$user_id) {
+    header('Location: login_register.php');
+    exit();
+}
 
-// 4. Suggestions query — replace with your actual DB call:
-// Example:
-//   $stmt = $pdo->query("SELECT product_id, name, price, image FROM products WHERE is_featured = 1 LIMIT 4");
-//   $suggestions = $stmt->fetchAll(PDO::FETCH_ASSOC);
-$suggestions = []; // ← remove once DB query is wired up
+// Fetch wishlist items with product details
+$wishlist_items = [];
+$stmt = $con->prepare("
+    SELECT w.id as wishlist_id, w.product_id, p.name, p.description as subtitle,
+           p.price, p.image_url as image, w.quantity
+    FROM wishlist w
+    JOIN products p ON p.id = w.product_id
+    WHERE w.user_id = ?
+    ORDER BY w.added_at DESC
+");
+$stmt->bind_param('i', $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-// 5. Summary totals — compute from wishlist_items or pass from controller
-$total_items    = array_sum(array_column($wishlist_items, 'quantity'));
+while ($row = $result->fetch_assoc()) {
+    $wishlist_items[] = $row;
+}
+$stmt->close();
+
+// Fetch product suggestions — show products not in wishlist
+$suggestions = [];
+$stmt = $con->prepare("
+    SELECT id as product_id, name, price, image_url as image
+    FROM products
+    WHERE id NOT IN (SELECT product_id FROM wishlist WHERE user_id = ?)
+    ORDER BY created_at DESC
+    LIMIT 4
+");
+$stmt->bind_param('i', $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+while ($row = $result->fetch_assoc()) {
+    $suggestions[] = $row;
+}
+$stmt->close();
+
+// Summary totals — compute from wishlist_items (multiply price by quantity)
+$total_items    = array_sum(array_map(fn($i) => $i['quantity'], $wishlist_items));
 $subtotal       = array_sum(array_map(fn($i) => $i['price'] * $i['quantity'], $wishlist_items));
 $shipping       = $subtotal > 0 ? 3000 : 0;
 $discount       = $subtotal > 0 ? 4100 : 0;
@@ -747,8 +773,8 @@ footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px;
             $wid      = (int) $item['wishlist_id'];
             $name     = htmlspecialchars($item['name']);
             $subtitle = htmlspecialchars($item['subtitle'] ?? '');
-            $price    = htmlspecialchars($item['price']);
-            $img_url  = htmlspecialchars(IMG_PATH . $item['image']);
+            $price    = (float) $item['price'];
+            $img_url  = htmlspecialchars($item['image']);
             $qty      = (int) $item['quantity'];
             $badge    = $item['badge'] ?? '';
             $bg_class = $bg_classes[$bg_index % count($bg_classes)];
@@ -769,7 +795,7 @@ footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px;
                   <h3 class="product-name"><?= $name ?></h3>
                   <p class="product-sub"><?= $subtitle ?></p>
                 </div>
-                <span class="product-price" id="item-price-<?= $wid ?>">₩<?= number_format($price) ?></span>
+                <span class="product-price" id="item-price-<?= $wid ?>">₩<?= number_format((int)$price) ?></span>
               </div>
               <div class="product-actions">
                 <div class="qty-control">
@@ -845,9 +871,9 @@ footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px;
           <?php foreach ($suggestions as $s) : ?>
           <div class="suggestion-card" data-product-id="<?= (int)$s['product_id'] ?>">
             <img alt="<?= htmlspecialchars($s['name']) ?>" class="suggestion-img"
-                 src="<?= htmlspecialchars(IMG_PATH . $s['image']) ?>"/>
+                 src="<?= htmlspecialchars($s['image']) ?>"/>
             <h4 class="suggestion-name"><?= htmlspecialchars($s['name']) ?></h4>
-            <p class="suggestion-price">₩<?= number_format($s['price']) ?></p>
+            <p class="suggestion-price">₩<?= number_format((int)$s['price']) ?></p>
             <button class="add-btn" onclick="addToWishlist(<?= (int)$s['product_id'] ?>)">ADD +</button>
           </div>
           <?php endforeach; ?>
@@ -917,9 +943,9 @@ footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px;
     })
     .then(r => r.json())
     .then(data => {
-      const card = document.querySelector('[data-wishlist-id="' + wishlistId + '"]');
-      if (card) card.remove();
-      if (data.totals) refreshSidebar(data.totals);
+      if (data.success) {
+        location.reload(); // Reload to show product back in recommendations
+      }
     });
   }
 

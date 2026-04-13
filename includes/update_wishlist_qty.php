@@ -1,49 +1,92 @@
 <?php
-// Include database connection
-include('db_connection.php');
+session_start();
+require_once 'db_connection.php';
+
+header('Content-Type: application/json');
 
 // Handle POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get variables from POST
-    $wishlist_id = $_POST['wishlist_id'];
-    $delta = $_POST['delta'];
+    // Get JSON input
+    $input = json_decode(file_get_contents('php://input'), true);
 
-    // Prepare the SQL statement to update the quantity
-    $stmt = $conn->prepare('UPDATE wishlist SET quantity = quantity + ? WHERE id = ?');
-    $stmt->bind_param('ii', $delta, $wishlist_id);
-    $stmt->execute();
-
-    // Check if the update was successful
-    if ($stmt->affected_rows > 0) {
-        // Retrieve the updated quantity
-        $stmt = $conn->prepare('SELECT quantity FROM wishlist WHERE id = ?');
-        $stmt->bind_param('i', $wishlist_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        $updated_quantity = $row['quantity'];
-
-        // Retrieve total quantity and price (assuming total_price is in the wishlist table)
-        $stmt = $conn->prepare('SELECT SUM(quantity) as total_qty, SUM(price) as total_price FROM wishlist');
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $totals = $result->fetch_assoc();
-
-        // Create response data
-        $response = [
-            'updated_quantity' => $updated_quantity,
-            'total_quantity' => $totals['total_qty'],
-            'total_price' => $totals['total_price']
-        ];
-
-        // Send response in JSON format
-        header('Content-Type: application/json');
-        echo json_encode($response);
-    } else {
-        // Handle error
-        http_response_code(500);
-        echo json_encode(['message' => 'Failed to update quantity.']);
+    if (!isset($input['wishlist_id'])) {
+        http_response_code(400);
+        echo json_encode(['message' => 'Missing wishlist_id']);
+        exit();
     }
+
+    $wishlist_id = (int)$input['wishlist_id'];
+    $delta = (int)($input['delta'] ?? 0);
+    $user_id = (int)($_SESSION['user_id'] ?? 0);
+
+    // Get current quantity
+    $current_stmt = $con->prepare("
+        SELECT quantity FROM wishlist
+        WHERE id = ? AND user_id = ?
+    ");
+    $current_stmt->bind_param('ii', $wishlist_id, $user_id);
+    $current_stmt->execute();
+    $current_result = $current_stmt->get_result();
+
+    if ($current_result->num_rows === 0) {
+        http_response_code(404);
+        echo json_encode(['message' => 'Item not found']);
+        $current_stmt->close();
+        exit();
+    }
+
+    $current_row = $current_result->fetch_assoc();
+    $current_qty = (int)$current_row['quantity'];
+    $current_stmt->close();
+
+    // Calculate new quantity
+    $new_qty = max(1, $current_qty + $delta); // Minimum 1
+
+    // Update quantity in database
+    $update_stmt = $con->prepare("
+        UPDATE wishlist SET quantity = ? WHERE id = ? AND user_id = ?
+    ");
+    $update_stmt->bind_param('iii', $new_qty, $wishlist_id, $user_id);
+
+    if (!$update_stmt->execute()) {
+        http_response_code(500);
+        echo json_encode(['message' => 'Failed to update quantity']);
+        $update_stmt->close();
+        exit();
+    }
+    $update_stmt->close();
+
+    // Get updated totals
+    $totals_stmt = $con->prepare("
+        SELECT
+            COALESCE(SUM(w.quantity), 0) as item_count,
+            COALESCE(SUM(p.price * w.quantity), 0) as subtotal
+        FROM wishlist w
+        JOIN products p ON w.product_id = p.id
+        WHERE w.user_id = ?
+    ");
+    $totals_stmt->bind_param('i', $user_id);
+    $totals_stmt->execute();
+    $totals_result = $totals_stmt->get_result();
+    $totals = $totals_result->fetch_assoc();
+    $totals_stmt->close();
+
+    $subtotal = (float)$totals['subtotal'];
+    $shipping = $subtotal > 0 ? 3000 : 0;
+    $discount = $subtotal > 0 ? 4100 : 0;
+
+    $response = [
+        'new_qty' => $new_qty,
+        'totals' => [
+            'item_count' => (int)$totals['item_count'],
+            'subtotal' => (int)$subtotal,
+            'shipping' => $shipping,
+            'discount' => $discount,
+            'final_total' => (int)($subtotal + $shipping - $discount)
+        ]
+    ];
+
+    echo json_encode($response);
 } else {
     // Invalid request method
     http_response_code(405);

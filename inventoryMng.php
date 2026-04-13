@@ -109,9 +109,7 @@ $categories_result = mysqli_query($con, "SELECT DISTINCT category FROM products 
     --outline: #757778; --outline-variant: #abadae;
     --font-headline: 'Epilogue', sans-serif; --font-body: 'Plus Jakarta Sans', sans-serif;
   }
-  body { background-color: var(--surface); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--on-surface); min-height: 100vh; }
-  .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; font-size: 24px; line-height: 1; vertical-align: middle; user-select: none; display: inline-block; }
-  .halftone-bg { background-image: radial-gradient(#000000 1px, transparent 0); background-size: 10px 10px; opacity: 0.05; position: absolute; inset: 0; pointer-events: none; }
+ body { background-color: var(--surface); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--on-surface); min-height: 100vh; background-image: radial-gradient(#000000 1px, transparent 0); background-size: 8px 8px; }
   /* Header */
   header { background: #ffffff; width: 100%; border-bottom: 4px solid #000000; position: sticky; top: 0; z-index: 50; }
   .header-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 1rem 2.5rem; }
@@ -148,12 +146,13 @@ $categories_result = mysqli_query($con, "SELECT DISTINCT category FROM products 
   .filter-arrow { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); pointer-events: none; }
   .btn-search { background: #000; color: #fff; border: 4px solid #000; padding: 0.75rem 1.5rem; font-family: 'Epilogue', serif; font-weight: 900; font-size: 0.875rem; text-transform: uppercase; cursor: pointer; transition: background 0.15s; }
   .btn-search:hover { background: var(--primary); }
-  .col-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 4px solid #000; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+  .col-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 4px solid #000; padding-bottom: 1rem; margin-bottom: 1.5rem; position: relative; }
   .col-header h2 { font-family: 'Epilogue', serif; font-size: 2rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.05em; }
-  .col-header span { font-weight: 700; color: var(--secondary); font-size: 0.875rem; }
+  .col-header span { font-weight: 700; color: var(--secondary); font-size: 0.875rem; background: #ffffff; padding: 0.25rem 0.75rem; border: 2px solid #000; position: relative; bottom: -0.6rem; }
   /* Product Cards */
   .product-list { display: flex; flex-direction: column; gap: 1rem; }
-  .product-card { background: var(--surface-container-lowest); border: 2px solid #000; padding: 1rem; display: flex; align-items: center; gap: 1rem; box-shadow: 4px 4px 0px 0px #000; transition: transform 0.15s, box-shadow 0.15s; position: relative; overflow: hidden; }
+  .product-card { background: var(--surface-container-lowest); border: 2px solid #000; padding: 1rem; display: flex; align-items: center; gap: 1rem; box-shadow: 4px 4px 0px 0px #000; transition: transform 0.15s, box-shadow 0.15s; position: relative; overflow: hidden; background-clip: padding-box; }
+  .product-card .halftone-bg { display: none; }
   .product-card:hover { transform: translate(2px,2px); box-shadow: none; }
   .product-thumb { width: 5rem; height: 5rem; border: 2px solid #000; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--surface-container); }
   .product-thumb img { width: 100%; height: 100%; object-fit: cover; }
@@ -202,16 +201,18 @@ $categories_result = mysqli_query($con, "SELECT DISTINCT category FROM products 
   /* Edit mode panel */
   .panel-edit { background-color: var(--secondary-container) !important; }
   /* Footer */
-  footer { background: #000; color: #fff; width: 100%; border-top: 4px solid #000; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 24px; }
-  @media (min-width: 768px) { footer { flex-direction: row; align-items: flex-start; } }
-  .footer-brand-name { font-family: 'Epilogue', sans-serif; font-weight: 900; font-style: italic; font-size: 1.4rem; color: var(--tertiary-container); text-shadow: 2px 2px 0 #000; }
-  .footer-rights { font-size: 0.8rem; font-weight: 700; color: #888; line-height: 1.4; text-transform: uppercase; margin-top: 8px; }
-  .footer-links { list-style: none; display: flex; gap: 24px; flex-wrap: wrap; }
-  .footer-links a { color: #fff; text-decoration: none; font-weight: 800; font-size: 0.9rem; text-transform: uppercase; transition: color 0.2s; }
-  .footer-links a:hover { color: var(--primary); }
-  .footer-socials { display: flex; gap: 12px; }
-  .social-icon { width: 48px; height: 48px; background: #fff; border: 3px solid #000; display: flex; align-items: center; justify-content: center; text-decoration: none; color: #000; box-shadow: 4px 4px 0px 0px #000; transition: all 0.1s; }
-  .social-icon:hover { transform: translate(2px,2px); box-shadow: 2px 2px 0px 0px #000; background: var(--primary-container); }
+  footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .footer-brand { display: flex; flex-direction: column; gap: 4px; }
+    .footer-brand-name { font-family: 'Epilogue', sans-serif; font-size: 1.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #fdd828; text-shadow: 3px 3px 0px #000; }
+    .footer-rights { font-family: var(--font-body); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); }
+    .footer-links { list-style: none; display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links li a { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.15s; display: inline-block; }
+    .footer-links li a:hover { color: var(--primary); }
+    .footer-socials { display: flex; gap: 10px; }
+    .social-icon { width: 36px; height: 36px; border: 2px solid rgba(255,255,255,0.3); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.7); cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s; text-decoration: none; }
+    .social-icon:hover { border-color: var(--primary); color: #fff; background: rgba(183,0,72,0.2); }
+    .social-icon .material-symbols-outlined { font-size: 1.1rem; }
+    .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; font-size: 24px; line-height: 1; letter-spacing: normal; display: inline-block; vertical-align: middle; }
 </style>
 </head>
 <body>
@@ -266,7 +267,7 @@ $categories_result = mysqli_query($con, "SELECT DISTINCT category FROM products 
           <span class="material-symbols-outlined search-icon">search</span>
         </div>
         <div class="filter-wrap">
-          <select name="category">
+          <select name="category" onchange="this.form.submit()">
             <option value="">All Categories</option>
             <?php if ($categories_result): while ($cat = mysqli_fetch_assoc($categories_result)): ?>
             <option value="<?php echo htmlspecialchars($cat['category']); ?>"
@@ -277,8 +278,7 @@ $categories_result = mysqli_query($con, "SELECT DISTINCT category FROM products 
           </select>
           <span class="material-symbols-outlined filter-arrow">keyboard_arrow_down</span>
         </div>
-        <button type="submit" class="btn-search">Filter</button>
-        <?php if ($search || $cat_filter): ?>
+        <?php if ($search): ?>
         <a href="inventoryMng.php" class="btn-cancel" style="width:auto;margin:0;padding:0.75rem 1rem;">Clear</a>
         <?php endif; ?>
       </form>
@@ -353,7 +353,7 @@ $categories_result = mysqli_query($con, "SELECT DISTINCT category FROM products 
           <?php endif; ?>
 
           <div class="form-group">
-            <label>Product Name *</label>
+            <label>Product Name <span style="color: red;">*</span></label>
             <input type="text" name="name" placeholder="e.g. Buldak Ramen" required
               value="<?php echo $edit_product ? htmlspecialchars($edit_product['name']) : ''; ?>"/>
           </div>
@@ -374,14 +374,14 @@ $categories_result = mysqli_query($con, "SELECT DISTINCT category FROM products 
               </select>
             </div>
             <div class="form-group">
-              <label>Price (₱) *</label>
+              <label>Price (₱)<span style="color: red;">*</span></label>
               <input type="number" name="price" step="0.01" min="0" placeholder="0.00" required
                 value="<?php echo $edit_product ? $edit_product['price'] : ''; ?>"/>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label>Stock Qty *</label>
+              <label>Stock Qty<span style="color: red;">*</span></label>
               <input type="number" name="stock" min="0" placeholder="0" required
                 value="<?php echo $edit_product ? $edit_product['stock_quantity'] : ''; ?>"/>
             </div>
@@ -407,7 +407,7 @@ $categories_result = mysqli_query($con, "SELECT DISTINCT category FROM products 
 <footer>
   <div class="footer-brand">
     <span class="footer-brand-name">Annyeong</span>
-    <span class="footer-rights">© 2025 Annyeong Market. All rights reserved.</span>
+    <span class="footer-rights">© 2025 Annyeong Market.<br/>All rights reserved.</span>
   </div>
   <ul class="footer-links">
     <li><a href="dashboard.php">Dashboard</a></li>

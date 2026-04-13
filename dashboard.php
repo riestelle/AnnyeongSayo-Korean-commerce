@@ -109,7 +109,7 @@ $pending_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orde
     .revenue-amount { font-size: 3rem; font-family: var(--font-headline); font-weight: 900; color: var(--primary); }
     .revenue-badge { display: flex; align-items: center; justify-content: flex-end; background: var(--secondary-container); color: var(--on-secondary-container); padding: 4px 8px; margin-top: 8px; font-weight: 700; font-style: italic; border: 2px solid #000; font-size: 0.875rem; gap: 4px; }
     .revenue-badge .material-symbols-outlined { font-size: 1rem; }
-    .bar-chart-wrap { height: 256px; width: 100%; background: var(--surface-container-low); border: 2px solid #000; position: relative; overflow: hidden; }
+    .bar-chart-wrap { width: 100%; background: var(--surface-container-low); border: 2px solid #000; position: relative; }
     .bars { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: flex-end; padding: 0 16px 16px; gap: 8px; }
     .bar { flex: 1; border: 2px solid #000; transition: transform 0.3s; transform-origin: bottom; }
     .bar.pink { background: var(--primary); } .bar.teal { background: var(--secondary); } .bar.yellow { background: var(--tertiary-container); }
@@ -229,38 +229,31 @@ $pending_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orde
           </div>
         </div>
       </div>
-      <div class="bar-chart-wrap">
-        <div class="halftone"></div>
-        <div class="bars">
-          <?php
-            $bar_result = mysqli_query($con, "
-                SELECT total_amount, is_walkin FROM orders
-                WHERE status='completed'
-                ORDER BY order_date DESC
-                LIMIT 8
-            ");
-            $bar_data = [];
-            while ($row = mysqli_fetch_assoc($bar_result)) {
-                $bar_data[] = ['amount' => $row['total_amount'], 'walkin' => $row['is_walkin']];
-            }
-            $bar_data = array_reverse($bar_data);
-            if (!empty($bar_data)):
-                $max_val = max(array_column($bar_data, 'amount')) ?: 1;
-                foreach ($bar_data as $entry):
-                    $height = round(($entry['amount'] / $max_val) * 90);
-                    $color = $entry['walkin'] ? 'yellow' : 'pink';
-          ?>
-          <div class="bar <?php echo $color; ?>" style="height:<?php echo $height; ?>%" title="<?php echo $entry['walkin'] ? 'Walk-in' : 'Online'; ?>: ₱<?php echo number_format($entry['amount'], 2); ?>"></div>
-          <?php endforeach;
-            else: ?>
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--outline);">No completed orders yet.</div>
-          <?php endif; ?>
+      <?php
+        $c_online   = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orders WHERE status='completed' AND is_walkin=0"))[0];
+        $c_walkin   = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orders WHERE status='completed' AND is_walkin=1"))[0];
+        $c_pending  = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orders WHERE status='pending'"))[0];
+        $c_cancel   = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orders WHERE status='cancelled'"))[0];
+        $c_total    = ($c_online + $c_walkin + $c_pending + $c_cancel) ?: 1;
+        $pct = fn($n) => round($n / $c_total * 100);
+        $segs = [
+          ['val'=>$c_online,  'pct'=>$pct($c_online),  'color'=>'var(--primary)',            'label'=>'Online Done'],
+          ['val'=>$c_walkin,  'pct'=>$pct($c_walkin),  'color'=>'var(--tertiary-container)', 'label'=>'Walk-in Done'],
+          ['val'=>$c_pending, 'pct'=>$pct($c_pending), 'color'=>'var(--secondary)',           'label'=>'Pending'],
+          ['val'=>$c_cancel,  'pct'=>$pct($c_cancel),  'color'=>'var(--outline-variant)',     'label'=>'Cancelled'],
+        ];
+      ?>
+      <div class="bar-chart-wrap" style="padding:20px 24px;display:flex;flex-direction:column;gap:14px;height:auto;">
+        <?php foreach ($segs as $s): ?>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="width:130px;flex-shrink:0;font-size:0.7rem;font-weight:900;text-transform:uppercase;letter-spacing:0.06em;color:var(--on-surface-variant);text-align:right;"><?php echo $s['label']; ?></span>
+          <div style="flex:1;position:relative;height:32px;background:var(--surface-container-high);border:2px solid #000;">
+            <div style="width:<?php echo max($s['pct'], 2); ?>%;height:100%;background:<?php echo $s['color']; ?>;border-right:<?php echo $s['pct'] > 0 ? '2px solid #000' : 'none'; ?>;transition:width 0.6s ease;"></div>
+          </div>
+          <span style="width:60px;flex-shrink:0;font-size:0.8rem;font-weight:900;color:var(--on-surface);"><?php echo $s['pct']; ?>% <span style="font-weight:500;color:var(--on-surface-variant);">(<?php echo $s['val']; ?>)</span></span>
         </div>
-        <div class="gradient-overlay"></div>
-      </div>
-      <div style="display:flex;gap:16px;margin-top:10px;font-size:0.75rem;font-weight:700;">
-        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;background:var(--primary);border:2px solid #000;display:inline-block;"></span> ONLINE</span>
-        <span style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;background:var(--tertiary-container);border:2px solid #000;display:inline-block;"></span> WALK-IN</span>
+        <?php endforeach; ?>
+        <div style="margin-top:4px;padding-top:12px;border-top:2px dashed #000;font-size:0.7rem;font-weight:700;color:var(--on-surface-variant);text-transform:uppercase;letter-spacing:0.08em;">Total Orders: <strong style="color:var(--on-surface);"><?php echo $c_total; ?></strong></div>
       </div>
     </section>
 
@@ -392,7 +385,7 @@ $pending_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orde
             <span class="material-symbols-outlined">group</span>
           </div>
         </a>
-        <a href="shop.php" class="hub-btn btn-grey">
+        <a href="userDashboard.php" class="hub-btn btn-grey">
           <span>View Shop</span>
           <span class="material-symbols-outlined">storefront</span>
         </a>

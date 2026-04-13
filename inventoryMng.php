@@ -6,6 +6,7 @@ $username = $_SESSION['username'] ?? 'Admin';
 $user_id  = $_SESSION['user_id']  ?? '00000';
 $role     = $_SESSION['role']     ?? 'admin';
 
+
 $msg = '';
 $msg_type = '';
 
@@ -387,7 +388,7 @@ $categories_result = mysqli_query($con, "SELECT DISTINCT category FROM products 
             </div>
             <div class="form-group">
               <label>Image URL</label>
-              <input type="text" name="image_url" placeholder="https://..."
+              <input type="text" name="image_url" id="img_url_input" placeholder="https://..."
                 value="<?php echo $edit_product ? htmlspecialchars($edit_product['image_url']) : ''; ?>"/>
             </div>
           </div>
@@ -432,6 +433,8 @@ $categories_result = mysqli_query($con, "SELECT DISTINCT category FROM products 
     var wrap = document.querySelector('.profile-trigger-wrap');
     if (wrap && !wrap.contains(e.target)) document.getElementById('profileDropdown').classList.remove('open');
   });
+
+
 </script>
 </body>
 </html>

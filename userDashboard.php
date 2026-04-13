@@ -932,9 +932,9 @@ footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px;
 <header>
   <div class="header-inner">
     <div class="header-left-group">
-      <a href="userDashboard.php" class="logo">Annyeong</a>
+      <a href="dashboard.php" class="logo">Annyeong</a>
       <nav>
-        <a href="userDashboard.php" class="active">Dashboard</a>
+        <a href="dashboard.php" class="active">Dashboard</a>
         <a href="wishlistCart.php">Wishlist</a>
         <a href="myOrders.php">My Orders</a>
       </nav>
@@ -1143,7 +1143,7 @@ footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px;
     <span class="footer-rights">&copy; 2025 Annyeong Market.<br/>All rights reserved.</span>
   </div>
   <ul class="footer-links">
-    <li><a href="userDashboard.php">Dashboard</a></li>
+    <li><a href="dashboard.php">Dashboard</a></li>
     <li><a href="wishlistCart.php">Wishlist</a></li>
     <li><a href="myOrders.php">My Orders</a></li>
   </ul>

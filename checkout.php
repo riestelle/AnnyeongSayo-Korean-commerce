@@ -4,7 +4,7 @@ session_start();
 
 // -- Auth guard (adjust to match your project's session key) --
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: login_register.php');
     exit;
 }
 
@@ -42,7 +42,7 @@ $catalogue = [
 ];
 
 if (!$product_id || !isset($catalogue[$product_id])) {
-    header('Location: dashboard.php?error=invalid_product');
+    header('Location: userDashboard.php?error=invalid_product');
     exit;
 }
 
@@ -357,9 +357,9 @@ function line_class(int $after_step, int $current): string {
 <header>
   <div class="header-inner">
     <div class="header-left-group">
-      <a href="dashboard.php" class="logo">Annyeong</a>
+      <a href="userDashboard.php" class="logo">Annyeong</a>
       <nav>
-        <a href="dashboard.php">Dashboard</a>
+        <a href="userDashboard.php">Dashboard</a>
         <a href="wishlistCart.php">Wishlist</a>
         <a href="myOrders.php">My Orders</a>
       </nav>
@@ -468,7 +468,7 @@ function line_class(int $after_step, int $current): string {
       </div>
     </div>
 
-    <a href="dashboard.php" class="success-cta-btn">
+    <a href="userDashboard.php" class="success-cta-btn">
       <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">storefront</span>
       Return to Shop
     </a>
@@ -714,7 +714,7 @@ function line_class(int $after_step, int $current): string {
     <span class="footer-rights">&copy; 2025 Annyeong Market.<br/>All rights reserved.</span>
   </div>
   <ul class="footer-links">
-    <li><a href="dashboard.php">Dashboard</a></li>
+    <li><a href="userDashboard.php">Dashboard</a></li>
     <li><a href="wishlistCart.php">Wishlist</a></li>
     <li><a href="myOrders.php">My Orders</a></li>
   </ul>

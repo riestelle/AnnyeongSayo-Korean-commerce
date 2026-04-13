@@ -23,6 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $sql = "INSERT INTO products (name, description, price, stock_quantity, category, image_url)
                 VALUES ('$name','$desc',$price,$stock,'$category','$img')";
         if (mysqli_query($con, $sql)) {
+            $new_id  = mysqli_insert_id($con);
+            $barcode = 'KST' . str_pad($new_id, 6, '0', STR_PAD_LEFT);
+            mysqli_query($con, "UPDATE products SET barcode='$barcode' WHERE id=$new_id");
             $msg = '✅ Product deployed successfully!';
             $msg_type = 'success';
         } else {

@@ -261,7 +261,7 @@ $total_rev       = $total_rev_row[0] ?? 0;
         <tr>
           <td class="order-id">#<?php echo str_pad($o['id'], 5, '0', STR_PAD_LEFT); ?></td>
           <td class="ts"><?php echo date('M d, Y H:i', strtotime($o['order_date'])); ?></td>
-          <td class="customer-name"><?php echo htmlspecialchars($o['username']); ?></td>
+          <td class="customer-name"><?php echo $o['is_walkin'] ? htmlspecialchars($o['cashier_name'] ?? 'Walk-in') : htmlspecialchars($o['username']); ?></td>
           <td class="amount">₱<?php echo number_format($o['total_amount'], 2); ?></td>
           <td><span class="badge <?php echo $badge; ?>"><?php echo strtoupper($o['status']); ?></span></td>
           <td>

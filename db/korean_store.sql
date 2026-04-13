@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 11, 2026 at 04:47 PM
+-- Generation Time: Apr 13, 2026 at 01:00 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -46,15 +46,18 @@ CREATE TABLE `orders` (
   `total_amount` decimal(10,2) NOT NULL,
   `status` enum('pending','completed','cancelled') DEFAULT 'pending',
   `order_date` timestamp NOT NULL DEFAULT current_timestamp(),
-  `is_walkin` tinyint(1) DEFAULT 0
+  `is_walkin` tinyint(1) DEFAULT 0,
+  `cashier_name` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `user_id`, `total_amount`, `status`, `order_date`, `is_walkin`) VALUES
-(1, 1, 165.00, 'completed', '2026-04-11 14:13:32', 1);
+INSERT INTO `orders` (`id`, `user_id`, `total_amount`, `status`, `order_date`, `is_walkin`, `cashier_name`) VALUES
+(1, 1, 165.00, 'completed', '2026-04-11 14:13:32', 1, 'cashier1'),
+(2, 1, 55.00, 'completed', '2026-04-13 09:46:50', 1, 'cashier1'),
+(3, 1, 415.00, 'completed', '2026-04-13 10:52:50', 1, 'cashier1');
 
 -- --------------------------------------------------------
 
@@ -75,7 +78,12 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price_at_purchase`) VALUES
-(1, 1, 1, 3, 55.00);
+(1, 1, 1, 3, 55.00),
+(2, 2, 1, 1, 55.00),
+(3, 3, 4, 2, 55.00),
+(4, 3, 5, 1, 55.00),
+(5, 3, 2, 3, 65.00),
+(6, 3, 1, 1, 55.00);
 
 -- --------------------------------------------------------
 
@@ -100,7 +108,11 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `name`, `description`, `price`, `category`, `image_url`, `stock_quantity`, `created_at`, `barcode`) VALUES
-(1, 'Shin Ramyun', 'Spicy Korean instant noodles', 55.00, 'Instant Food', 'https://res.cloudinary.com/ds3irzr48/image/upload/q_auto/f_auto/v1775913043/Shin_Ramyun_b4yubg.webp', 97, '2026-04-11 13:11:20', 'KST000001');
+(1, 'Shin Ramyun', 'Spicy Korean instant noodles', 55.00, 'Instant Food', 'https://res.cloudinary.com/ds3irzr48/image/upload/q_auto/f_auto/v1775913043/Shin_Ramyun_b4yubg.webp', 99, '2026-04-11 13:11:20', 'KST000001'),
+(2, 'Buldak Ramen', 'Spicy fire noodles by Samyang. Classic Korean instant ramen.', 65.00, 'Instant Food', 'https://cdn.buldak.roundsquare.io/uploads/2025/05/9_Buldak-Ramen-Carbonara_130g-1-1024x1024.png', 47, '2026-04-13 10:15:48', 'KST000002'),
+(3, 'Choco Pie', 'Lotte Choco Pie — soft marshmallow cake coated in chocolate.', 35.00, 'Sweets', 'https://tse2.mm.bing.net/th/id/OIP.Y9jMUeV7OvphI_IzdGa8EQHaGq?rs=1&pid=ImgDetMain&o=7&rm=3', 120, '2026-04-13 10:16:44', 'KST000003'),
+(4, 'Banana Milk', 'Binggrae banana flavored milk drink. K-drama staple.', 55.00, 'Drinks', 'https://foodly.tn/wp-content/uploads/2021/08/What-is-Korean-banana-milk-made-of-1-scaled.jpg', 78, '2026-04-13 10:17:47', 'KST000004'),
+(5, 'Strawberry Milk', 'Binggrae strawberry flavored milk. Sweet and creamy K-snack staple.', 55.00, 'Drinks', 'https://th.bing.com/th/id/R.079f1d9f4b3d508084c811a2cb999feb?rik=rxjPXzhhxWTNyw&riu=http%3a%2f%2fbudgetbox.ph%2fcdn%2fshop%2fproducts%2fBinggraeStrawberry_1200x1200.jpg%3fv%3d1749004604&ehk=X26gm1xf04i2FWNKignJJEMYBwggtp0oXro%2bjsvYYfU%3d&risl=&pid=ImgRaw&r=0', 29, '2026-04-13 10:51:58', 'KST000005');
 
 -- --------------------------------------------------------
 
@@ -204,19 +216,19 @@ ALTER TABLE `cart`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users`

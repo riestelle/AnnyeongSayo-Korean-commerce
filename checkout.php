@@ -46,8 +46,8 @@ if (empty($wishlist_items)) {
 // Calculate totals
 $total_items = array_sum(array_map(fn($i) => $i['quantity'], $wishlist_items));
 $subtotal = array_sum(array_map(fn($i) => $i['price'] * $i['quantity'], $wishlist_items));
-$shipping = $subtotal > 0 ? 3000 : 0;
-$discount = min(4100, floor($subtotal * 0.10)); // 10% discount, max ₩4,100
+$shipping = $subtotal > 0 ? 150 : 0;
+$discount = min(200, floor($subtotal * 0.10)); // 10% discount, max ₱200
 $final_total = max(0, $subtotal + $shipping - $discount);
 
 // For title and pricing used in the page
@@ -80,13 +80,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
         $order_error = 'Please enter the amount to pay inside the payment modal.';
     } elseif ($tendered_rounded < $expected_rounded) {
         $diff = number_format($expected_rounded - $tendered_rounded, 2);
-        $order_error = "Amount is short by ₩{$diff}. Please enter the exact total of ₩{$product_price}.";
+        $order_error = "Amount is short by ₱{$diff}. Please enter the exact total of ₱{$product_price}.";
     } elseif ($tendered_rounded > $expected_rounded) {
         $diff = number_format($tendered_rounded - $expected_rounded, 2);
-        $order_error = "Amount exceeds the total by ₩{$diff}. Please enter the exact total of ₩{$product_price}.";
+        $order_error = "Amount exceeds the total by ₱{$diff}. Please enter the exact total of ₱{$product_price}.";
     } else {
         // ✅ Validation passed - Save order to database
-        $status = 'completed';
+        $status = 'pending';
         $insert_order = $con->prepare("INSERT INTO orders (user_id, total_amount, status) VALUES (?, ?, ?)");
         $insert_order->bind_param('ids', $user_id, $final_total, $status);
 
@@ -380,9 +380,9 @@ function line_class(int $after_step, int $current): string {
 <header>
   <div class="header-inner">
     <div class="header-left-group">
-      <a href="dashboard.php" class="logo">Annyeong</a>
+      <a href="userDashboard.php" class="logo">Annyeong'Sayo</a>
       <nav>
-        <a href="dashboard.php">Dashboard</a>
+        <a href="userDashboard.php">Dashboard</a>
         <a href="wishlistCart.php">Wishlist</a>
         <a href="myOrders.php">My Orders</a>
       </nav>
@@ -474,24 +474,26 @@ function line_class(int $after_step, int $current): string {
         LOOT SUMMARY
       </h2>
       <div class="success-item-list">
+        <?php foreach ($wishlist_items as $item): ?>
         <div class="success-item-row">
           <div class="success-item-img">
-            <img src="<?= $product_image ?>" alt="<?= $product_name ?>"/>
+            <img src="<?= htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['name']) ?>"/>
           </div>
           <div class="success-item-info">
-            <div class="success-item-info__name"><?= $product_name ?></div>
-            <div class="success-item-info__qty">Qty: <?= $product_qty ?></div>
+            <div class="success-item-info__name"><?= htmlspecialchars($item['name']) ?></div>
+            <div class="success-item-info__qty">Qty: <?= (int)$item['quantity'] ?> &times; ₱<?= number_format((float)$item['price']) ?></div>
           </div>
-          <span class="success-item-price">$<?= $product_price ?></span>
+          <span class="success-item-price">₱<?= number_format((float)$item['price'] * (int)$item['quantity']) ?></span>
         </div>
+        <?php endforeach; ?>
       </div>
       <div class="success-loot-total">
         <span class="success-loot-total__label">Total Extraction</span>
-        <span class="success-loot-total__value">$<?= $product_price ?></span>
+        <span class="success-loot-total__value">₱<?= number_format($final_total) ?></span>
       </div>
     </div>
 
-    <a href="dashboard.php" class="success-cta-btn">
+    <a href="userDashboard.php" class="success-cta-btn">
       <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">storefront</span>
       Return to Shop
     </a>
@@ -508,7 +510,7 @@ function line_class(int $after_step, int $current): string {
   </div>
   <?php endif; ?>
 
-  <form method="POST" action="checkout.php?id=<?= $product_id ?>">
+  <form method="POST" action="checkout.php">
 
     <div class="checkout-sections">
 
@@ -545,9 +547,9 @@ function line_class(int $after_step, int $current): string {
             </div>
             <div class="loot-info">
               <div class="loot-name"><?= htmlspecialchars($item['name']) ?></div>
-              <div class="loot-qty">Qty: <?= (int)$item['quantity'] ?> × ₩<?= number_format((float)$item['price']) ?></div>
+              <div class="loot-qty">Qty: <?= (int)$item['quantity'] ?> × ₱<?= number_format((float)$item['price']) ?></div>
             </div>
-            <div class="loot-price">₩<?= number_format((float)$item['price'] * (int)$item['quantity']) ?></div>
+            <div class="loot-price">₱<?= number_format((float)$item['price'] * (int)$item['quantity']) ?></div>
           </div>
           <?php endforeach; ?>
         </div>
@@ -626,7 +628,7 @@ function line_class(int $after_step, int $current): string {
               <label>
                 Amount to Pay
                 <small style="font-style:normal;text-transform:none;font-weight:400;opacity:0.7;">
-                  (exact: $<?= $product_price ?>)
+                  (exact: ₱<?= $product_price ?>)
                 </small>
               </label>
               <input type="number"
@@ -676,16 +678,17 @@ function line_class(int $after_step, int $current): string {
               <label>
                 Amount to Pay
                 <small style="font-style:normal;text-transform:none;font-weight:400;opacity:0.7;">
-                  (exact: $<?= $product_price ?>)
+                  (exact: ₱<?= $product_price ?>)
                 </small>
               </label>
               <input type="number"
-                     name="tendered_amount"
+                     name="tendered_amount_wallet_display"
                      id="tendered_amount_wallet"
                      class="tendered-input <?= $order_error ? 'invalid' : '' ?>"
                      placeholder="<?= $product_price ?>"
                      step="0.01" min="0"
-                     value="<?= htmlspecialchars($_POST['tendered_amount'] ?? '') ?>"/>
+                     value="<?= htmlspecialchars($_POST['tendered_amount'] ?? '') ?>"
+                     oninput="document.getElementById('tendered_amount').value = this.value"/>
               <span class="tendered-hint <?= $order_error ? 'err' : '' ?>">
                 <?= $order_error ? htmlspecialchars($order_error) : 'Must match the exact total.' ?>
               </span>
@@ -707,22 +710,22 @@ function line_class(int $after_step, int $current): string {
         <div class="final-damage-inner">
           <div class="damage-row">
             <span>Subtotal (<?= $total_items ?> items)</span>
-            <span>₩<?= number_format($subtotal) ?></span>
+            <span>₱<?= number_format($subtotal) ?></span>
           </div>
           <div class="damage-row">
             <span>Shipping</span>
-            <span>₩<?= number_format($shipping) ?></span>
+            <span>₱<?= number_format($shipping) ?></span>
           </div>
           <div class="damage-divider">
             <span>Membership Discount</span>
-            <span>-₩<?= number_format($discount) ?></span>
+            <span>-₱<?= number_format($discount) ?></span>
           </div>
           <div class="final-total-row">
             <div class="final-total-label">
               <h2 class="text-stroke-md">Final Total</h2>
               <p>Ready for checkout</p>
             </div>
-            <div class="final-total-amount">₩<?= number_format($final_total) ?></div>
+            <div class="final-total-amount">₱<?= number_format($final_total) ?></div>
           </div>
         </div>
       </section>

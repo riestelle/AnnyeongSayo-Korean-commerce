@@ -57,8 +57,8 @@ $stmt->close();
 // Summary totals — compute from wishlist_items (multiply price by quantity)
 $total_items    = array_sum(array_map(fn($i) => $i['quantity'], $wishlist_items));
 $subtotal       = array_sum(array_map(fn($i) => $i['price'] * $i['quantity'], $wishlist_items));
-$shipping       = $subtotal > 0 ? 3000 : 0;
-$discount       = min(4100, floor($subtotal * 0.10)); // 10% discount, max ₩4,100
+$shipping       = $subtotal > 0 ? 150 : 0;
+$discount       = min(200, floor($subtotal * 0.10)); // 10% discount, max ₱200
 $final_total    = max(0, $subtotal + $shipping - $discount);
 ?>
 <!DOCTYPE html>
@@ -837,7 +837,7 @@ footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px;
                   <h3 class="product-name"><?= $name ?></h3>
                   <p class="product-sub"><?= $subtitle ?></p>
                 </div>
-                <span class="product-price" id="item-price-<?= $wid ?>">₩<?= number_format((int)$price) ?></span>
+                <span class="product-price" id="item-price-<?= $wid ?>">₱<?= number_format((int)$price) ?></span>
               </div>
               <div class="product-actions">
                 <div class="qty-control">
@@ -868,21 +868,21 @@ footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px;
             <div class="totals">
               <div class="total-row">
                 <span>TOTAL ITEMS (<span id="summary-item-count"><?= $total_items ?></span>)</span>
-                <span id="summary-subtotal">₩<?= number_format($subtotal) ?></span>
+                <span id="summary-subtotal">₱<?= number_format($subtotal) ?></span>
               </div>
               <div class="total-row secondary">
                 <span>ESTIMATE SHIPPING</span>
-                <span id="summary-shipping">₩<?= number_format($shipping) ?></span>
+                <span id="summary-shipping">₱<?= number_format($shipping) ?></span>
               </div>
               <div class="total-row primary-dim">
                 <span>MEMBERSHIP DISCOUNT</span>
-                <span id="summary-discount">-₩<?= number_format($discount) ?></span>
+                <span id="summary-discount">-₱<?= number_format($discount) ?></span>
               </div>
             </div>
             <div class="final-section">
               <div class="final-row">
                 <span class="final-label">FINAL ESTIMATE</span>
-                <span class="final-amount" id="summary-final">₩<?= number_format($final_total) ?></span>
+                <span class="final-amount" id="summary-final">₱<?= number_format($final_total) ?></span>
               </div>
               <button class="checkout-btn kinetic-border" onclick="window.location.href='checkout.php'">
                 <span class="checkout-btn-main">CHECKOUT NOW!</span>
@@ -915,7 +915,7 @@ footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px;
             <img alt="<?= htmlspecialchars($s['name']) ?>" class="suggestion-img"
                  src="<?= htmlspecialchars($s['image']) ?>"/>
             <h4 class="suggestion-name"><?= htmlspecialchars($s['name']) ?></h4>
-            <p class="suggestion-price">₩<?= number_format((int)$s['price']) ?></p>
+            <p class="suggestion-price">₱<?= number_format((int)$s['price']) ?></p>
             <button class="add-btn" onclick="addToWishlist(<?= (int)$s['product_id'] ?>)">ADD +</button>
           </div>
           <?php endforeach; ?>
@@ -1009,10 +1009,10 @@ footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px;
   // Expected: { item_count, subtotal, shipping, discount, final_total }
   function refreshSidebar(totals) {
     document.getElementById('summary-item-count').textContent = totals.item_count;
-    document.getElementById('summary-subtotal').textContent   = '₩' + totals.subtotal.toLocaleString();
-    document.getElementById('summary-shipping').textContent   = '₩' + totals.shipping.toLocaleString();
-    document.getElementById('summary-discount').textContent   = '-₩' + totals.discount.toLocaleString();
-    document.getElementById('summary-final').textContent      = '₩' + totals.final_total.toLocaleString();
+    document.getElementById('summary-subtotal').textContent   = '₱' + totals.subtotal.toLocaleString();
+    document.getElementById('summary-shipping').textContent   = '₱' + totals.shipping.toLocaleString();
+    document.getElementById('summary-discount').textContent   = '-₱' + totals.discount.toLocaleString();
+    document.getElementById('summary-final').textContent      = '₱' + totals.final_total.toLocaleString();
   }
 </script>
 </body>

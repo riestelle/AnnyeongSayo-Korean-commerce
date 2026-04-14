@@ -6,8 +6,10 @@ session_start();
 // 1. Base path for all product images
 define('IMG_PATH', '/assets/images/products/');
 
-// 2. Session / auth variables (already set by your auth middleware)
-// $username, $role, $user_id — already used below in the header dropdown.
+// 2. Session / auth variables
+$username = $_SESSION['username'] ?? 'Guest';
+$role     = $_SESSION['role']     ?? 'Customer';
+$user_id  = $_SESSION['user_id']  ?? 0;
 
 // ── Splash popup: show once per login ──────────────────────
 // Your login script should set $_SESSION['just_logged_in'] = true;

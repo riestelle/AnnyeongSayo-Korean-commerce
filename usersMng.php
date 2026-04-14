@@ -69,7 +69,7 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
     --surface-container: #e6e8ea; --surface-container-low: #eff1f2; --surface-container-lowest: #fff;
     --surface-container-highest: #dadddf; --on-surface-variant: #595c5d;
     --outline: #757778; --error: #b31b25; --error-container: #fb5151; --on-error: #ffefee;
-    --font-headline: 'Epilogue', sans-serif; --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-headline: 'Plus Jakarta Sans', 'Epilogue', sans-serif; --font-body: 'Plus Jakarta Sans', sans-serif;
   }
   body { background: var(--background); color: var(--on-background); font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; display: flex; flex-direction: column; background-image: radial-gradient(#000000 1px, transparent 0); background-size: 8px 8px; }
   .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; font-size: 24px; line-height: 1; vertical-align: middle; user-select: none; display: inline-block; }

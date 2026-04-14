@@ -57,7 +57,7 @@ $stmt->close();
 // Summary totals — compute from wishlist_items (multiply price by quantity)
 $total_items    = array_sum(array_map(fn($i) => $i['quantity'], $wishlist_items));
 $subtotal       = array_sum(array_map(fn($i) => $i['price'] * $i['quantity'], $wishlist_items));
-$shipping       = $subtotal >= 50000 ? 0 : max(1500, floor($subtotal * 0.05)); // Free if ≥₩50k, else 5% (max ₩2k)
+$shipping       = $subtotal > 0 ? 3000 : 0;
 $discount       = min(4100, floor($subtotal * 0.10)); // 10% discount, max ₩4,100
 $final_total    = max(0, $subtotal + $shipping - $discount);
 ?>

@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else if ($user['role'] === 'cashier') {
                 header("Location: ../cashierMng.php");
             } else {
-                header("Location: ../shop.php");
+                header("Location: ../userDashboard.php");
             }
             exit();
         } else {

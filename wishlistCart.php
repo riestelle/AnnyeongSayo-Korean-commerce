@@ -189,14 +189,20 @@ header { background: #ffffff; width: 100%; border-bottom: 4px solid #000000; pos
 main {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 3rem 1.5rem;
+  padding: clamp(1rem, 5vw, 3rem) clamp(0.5rem, 4vw, 1.5rem);
 }
 
 .checkout-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 3rem;
+  gap: clamp(1.5rem, 4vw, 3rem);
   align-items: start;
+}
+
+@media (min-width: 768px) {
+  .checkout-grid {
+    gap: clamp(2rem, 5vw, 3rem);
+  }
 }
 
 @media (min-width: 1024px) {
@@ -227,7 +233,7 @@ main {
 }
 
 .haul-title {
-  font-size: 2.5rem;
+  font-size: clamp(1.75rem, 5vw, 3rem);
   font-weight: 900;
   font-family: 'Epilogue', sans-serif;
   text-transform: uppercase;
@@ -240,7 +246,7 @@ main {
 
 @media (min-width: 768px) {
   .haul-title {
-    font-size: 3rem;
+    font-size: clamp(2rem, 6vw, 3rem);
   }
 }
 
@@ -248,7 +254,7 @@ main {
   background-color: var(--surface-container-lowest);
   border: 3px solid #000000;
   box-shadow: 4px 4px 0px 0px #000000;
-  padding: 0.875rem;
+  padding: clamp(0.5rem, 3vw, 0.875rem);
   position: relative;
   transition: transform 0.2s;
 }
@@ -259,13 +265,21 @@ main {
 
 .product-card-inner {
   display: flex;
-  gap: 1rem;
-  align-items: center;
+  flex-direction: column;
+  gap: clamp(0.75rem, 2vw, 1rem);
+  align-items: flex-start;
+}
+
+@media (min-width: 500px) {
+  .product-card-inner {
+    flex-direction: row;
+    align-items: center;
+  }
 }
 
 .product-img-wrap {
-  width: 5rem;
-  height: 5rem;
+  width: clamp(4rem, 15vw, 5rem);
+  height: clamp(4rem, 15vw, 5rem);
   border: 3px solid #000000;
   overflow: hidden;
   position: relative;
@@ -400,17 +414,25 @@ main {
 
 .sidebar {
   position: sticky;
-  top: 7rem;
+  top: clamp(4rem, 10vh, 7rem);
+}
+
+@media (max-width: 767px) {
+  .sidebar {
+    position: static;
+    order: -1;
+    margin-bottom: 2rem;
+  }
 }
 
 .command-center {
   background-color: var(--tertiary-container);
   border: 3px solid #000000;
   box-shadow: 4px 4px 0px 0px #000000;
-  padding: 1.25rem;
+  padding: clamp(1rem, 4vw, 1.25rem);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: clamp(0.7rem, 2vw, 1rem);
   position: relative;
   overflow: hidden;
 }
@@ -429,7 +451,7 @@ main {
 }
 
 .command-title {
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 4vw, 1.25rem);
   font-weight: 900;
   font-family: 'Epilogue', sans-serif;
   text-transform: uppercase;
@@ -497,7 +519,7 @@ main {
 }
 
 .final-amount {
-  font-size: 1.875rem;
+  font-size: clamp(1.25rem, 5vw, 1.875rem);
   font-weight: 900;
   font-family: 'Epilogue', sans-serif;
   color: var(--primary);
@@ -602,11 +624,23 @@ main {
 
 .suggestions-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: clamp(1rem, 3vw, 1.5rem);
+}
+
+@media (min-width: 480px) {
+  .suggestions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (min-width: 768px) {
+  .suggestions-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
   .suggestions-grid {
     grid-template-columns: repeat(4, 1fr);
   }

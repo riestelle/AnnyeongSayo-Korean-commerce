@@ -224,7 +224,7 @@ $categories_result = mysqli_query($con, "SELECT DISTINCT category FROM products 
 <header>
   <div class="header-inner">
     <div class="header-left-group">
-      <a href="dashboard.php" class="logo">Annyeong</a>
+      <a href="dashboard.php" class="logo">Annyeong'Sayo</a>
       <nav>
         <a href="dashboard.php">Dashboard</a>
         <a href="inventoryMng.php" class="active">Inventory</a>
@@ -410,7 +410,7 @@ $categories_result = mysqli_query($con, "SELECT DISTINCT category FROM products 
 
 <footer>
   <div class="footer-brand">
-    <span class="footer-brand-name">Annyeong</span>
+    <span class="footer-brand-name">Annyeong'Sayo</span>
     <span class="footer-rights">© 2025 Annyeong Market.<br/>All rights reserved.</span>
   </div>
   <ul class="footer-links">

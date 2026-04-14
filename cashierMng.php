@@ -87,7 +87,7 @@ $orders_result = mysqli_query($con, "
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Cashier — Annyeong</title>
+<title>Cashier — Annyeong'Sayo</title>
 <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,900;1,900&family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <style>
@@ -241,7 +241,7 @@ $orders_result = mysqli_query($con, "
 <header>
   <div class="header-inner">
     <div class="header-left-group">
-      <a href="<?php echo $role === 'admin' ? 'dashboard.php' : 'cashierMng.php'; ?>" class="logo">Annyeong</a>
+      <a href="<?php echo $role === 'admin' ? 'dashboard.php' : 'cashierMng.php'; ?>" class="logo">Annyeong'Sayo</a>
       <nav>
         <?php if ($role === 'admin'): ?>
         <a href="dashboard.php">Dashboard</a>
@@ -394,7 +394,7 @@ $orders_result = mysqli_query($con, "
 <div class="receipt-overlay" id="receiptOverlay">
   <div class="receipt-box" id="receiptBox">
     <div class="receipt-top">
-      <div class="r-logo">Annyeong</div>
+      <div class="r-logo">Annyeong'Sayo</div>
       <div class="r-sub">Korean Store — Official Receipt</div>
     </div>
     <div class="receipt-body">
@@ -433,7 +433,7 @@ $orders_result = mysqli_query($con, "
 
 <footer>
   <div class="footer-brand">
-    <span class="footer-brand-name">Annyeong</span>
+    <span class="footer-brand-name">Annyeong'Sayo</span>
     <span class="footer-rights">© 2025 Annyeong Market. All rights reserved.</span>
   </div>
   <ul class="footer-links">

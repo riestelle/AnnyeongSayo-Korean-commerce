@@ -165,7 +165,7 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
 <header>
   <div class="header-inner">
     <div class="header-left-group">
-      <a href="dashboard.php" class="logo">Annyeong</a>
+      <a href="dashboard.php" class="logo">Annyeong'Sayo</a>
       <nav>
         <a href="dashboard.php">Dashboard</a>
         <a href="inventoryMng.php">Inventory</a>
@@ -293,7 +293,7 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
 
 <footer>
   <div class="footer-brand">
-    <span class="footer-brand-name">Annyeong</span>
+    <span class="footer-brand-name">Annyeong'Sayo</span>
     <span class="footer-rights">© 2025 Annyeong Market.<br/>All rights reserved.</span>
   </div>
   <ul class="footer-links">

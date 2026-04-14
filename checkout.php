@@ -742,7 +742,7 @@ function line_class(int $after_step, int $current): string {
 </main>
 <footer>
   <div class="footer-brand">
-    <span class="footer-brand-name">Annyeong</span>
+    <span class="footer-brand-name">Annyeong'Sayo</span>
     <span class="footer-rights">&copy; 2025 Annyeong Market.<br/>All rights reserved.</span>
   </div>
   <ul class="footer-links">

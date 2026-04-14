@@ -138,12 +138,18 @@ $final_total    = $subtotal + $shipping - $discount;
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   background-color: var(--surface);
   color: var(--on-background);
   min-height: 100vh;
-  background-image: radial-gradient(#000000 1px, transparent 0); background-size: 8px 8px; 
+  display: flex;
+  flex-direction: column;
+  background-image: radial-gradient(#000000 1px, transparent 0); background-size: 8px 8px;
 }
 
 h1, h2, h3, .brand-font {
@@ -190,6 +196,8 @@ main {
   max-width: 1440px;
   margin: 0 auto;
   padding: clamp(1rem, 5vw, 3rem) clamp(0.5rem, 4vw, 1.5rem);
+  flex: 1;
+  width: 100%;
 }
 
 .checkout-grid {

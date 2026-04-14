@@ -47,8 +47,8 @@ if (empty($wishlist_items)) {
 $total_items = array_sum(array_map(fn($i) => $i['quantity'], $wishlist_items));
 $subtotal = array_sum(array_map(fn($i) => $i['price'] * $i['quantity'], $wishlist_items));
 $shipping = $subtotal > 0 ? 3000 : 0;
-$discount = $subtotal > 0 ? 4100 : 0;
-$final_total = $subtotal + $shipping - $discount;
+$discount = min(4100, floor($subtotal * 0.10)); // 10% discount, max ₩4,100
+$final_total = max(0, $subtotal + $shipping - $discount);
 
 // For title and pricing used in the page
 $product_name  = 'Wishlist Order (' . $total_items . ' items)';

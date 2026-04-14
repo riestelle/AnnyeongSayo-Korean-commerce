@@ -73,7 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $subtotal = (float)$totals['subtotal'];
     $shipping = $subtotal > 0 ? 3000 : 0;
-    $discount = $subtotal > 0 ? 4100 : 0;
+    $discount = min(4100, floor($subtotal * 0.10)); // 10% discount, max ₩4,100
+    $final_total = max(0, $subtotal + $shipping - $discount);
 
     $response = [
         'new_qty' => $new_qty,
@@ -81,8 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'item_count' => (int)$totals['item_count'],
             'subtotal' => (int)$subtotal,
             'shipping' => $shipping,
-            'discount' => $discount,
-            'final_total' => (int)($subtotal + $shipping - $discount)
+            'discount' => (int)$discount,
+            'final_total' => (int)$final_total
         ]
     ];
 

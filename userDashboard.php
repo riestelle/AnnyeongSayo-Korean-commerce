@@ -2,7 +2,7 @@
 //  BACKEND INTEGRATION BLOCK
 //  backend should populate these before this
 //  file renders. Move this to a controller/init file.
-
+session_start();
 // 1. Base path for all product images
 define('IMG_PATH', '/assets/images/products/');
 

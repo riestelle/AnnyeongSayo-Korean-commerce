@@ -718,7 +718,7 @@
 
     <!--header-->
     <header>
-        <h1 class="brand-name">WebName</h1>
+        <h1 class="brand-name">Annyeong'Sayo</h1>
     </header>
 
     <div class="popup-toast" id="logoutToast">
@@ -797,22 +797,26 @@
                     <form action="includes/login_process.php" method="POST">
 
                     <div class="form-group">
-                        <label for="username">Username</label>
+                        <label for="login_username">Username</label>
                         <input
-                            id="username"
+                            id="login_username"
                             name="username"
                             type="text"
-                            placeholder="CRUNCHMASTER_01"
+                            placeholder="Enter your username"
+                            autocomplete="username"
+                            required
                         />
                     </div>
 
                     <div class="form-group">
-                        <label for="password">Password</label>
+                        <label for="login_password">Password</label>
                         <input
-                            id="password"
+                            id="login_password"
                             name="password"
                             type="password"
-                            placeholder="••••••••"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
                         />
                     </div>
 
@@ -849,39 +853,46 @@
                     <form action="includes/register_process.php" method="POST">
 
                     <div class="form-group">
-                        <label for="username">Create Username</label>
+                        <label for="reg_username">Username</label>
                         <input
-                            id="username"
+                            id="reg_username"
                             name="username"
                             type="text"
-                            placeholder="CRUNCHMASTER_01"
+                            placeholder="Enter a username"
+                            autocomplete="username"
+                            required
                         />
                     </div>
 
                     <div class="form-group">
-                        <label for="username">Input Email</label>
+                        <label for="reg_email">Email Address</label>
                         <input
-                            id="email"
+                            id="reg_email"
                             name="email"
-                            type="text"
+                            type="email"
                             placeholder="you@example.com"
+                            autocomplete="email"
+                            required
                         />
                     </div>
 
                     <div class="form-group">
-                        <label for="password">Create Password</label>
+                        <label for="reg_password">Password</label>
                         <input
-                            id="password"
+                            id="reg_password"
                             name="password"
                             type="password"
-                            placeholder="••••••••"
+                            placeholder="At least 8 characters"
+                            autocomplete="new-password"
+                            minlength="8"
+                            required
                         />
                     </div>
 
                     <div class="form-group">
-                        <label for="confirm_password">Confirm Password</label>
+                        <label for="reg_confirm_password">Confirm Password</label>
                         <input
-                            id="confirm_password"
+                            id="reg_confirm_password"
                             name="confirm_password"
                             type="password"
                             placeholder="••••••••"
@@ -913,8 +924,8 @@
 
         <!-- Far left: brand -->
         <div class="footer-brand">
-            <span class="footer-brand-name">WebName</span>
-            <span class="footer-rights">© 2024 WebName Ltd.<br/>All rights reserved.</span>
+            <span class="footer-brand-name">Annyeong'Sayo</span>
+            <span class="footer-rights">© 2026 Annyeong'Sayo. All rights reserved.</span>
         </div>
 
         <!-- Center: quick links -->
@@ -943,6 +954,24 @@
 
     </footer>
 
+
+<script>
+function validateRegister() {
+    var pw  = document.getElementById('reg_password').value;
+    var cpw = document.getElementById('reg_confirm_password').value;
+    if (pw !== cpw) {
+        alert('Passwords do not match. Please try again.');
+        document.getElementById('reg_confirm_password').focus();
+        return false;
+    }
+    if (pw.length < 8) {
+        alert('Password must be at least 8 characters.');
+        document.getElementById('reg_password').focus();
+        return false;
+    }
+    return true;
+}
+</script>
 </body>
 
 </html>

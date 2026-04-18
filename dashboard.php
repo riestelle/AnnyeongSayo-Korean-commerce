@@ -58,26 +58,26 @@ $pending_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orde
       --surface-container-lowest: #ffffff; --surface-bright: #f5f6f7; --surface-dim: #d1d5d7;
       --surface-variant: #dadddf; --on-surface: #2c2f30; --on-surface-variant: #595c5d;
       --on-background: #2c2f30; --background: #f5f6f7; --primary: #b70048; --primary-dim: #a1003f;
-      --primary-container: #ff7290; --primary-fixed: #ff7290; --primary-fixed-dim: #ff557f;
+      --primary-container: #f4a0b0; --primary-fixed: #f4a0b0; --primary-fixed-dim: #f08096;
       --on-primary: #ffeff0; --on-primary-fixed: #000000; --on-primary-container: #4d001a;
-      --secondary: #006668; --secondary-dim: #00595b; --secondary-container: #52f9fc;
-      --secondary-fixed: #52f9fc; --secondary-fixed-dim: #3ceaee; --on-secondary: #c0feff;
+      --secondary: #006668; --secondary-dim: #00595b; --secondary-container: #a8d5d6;
+      --secondary-fixed: #a8d5d6; --secondary-fixed-dim: #8fc8ca; --on-secondary: #d8f0f1;
       --on-secondary-fixed: #004749; --on-secondary-container: #005b5d;
-      --tertiary: #6c5a00; --tertiary-container: #fdd828; --on-tertiary: #fff2cc;
+      --tertiary: #6c5a00; --tertiary-container: #e8c84a; --on-tertiary: #fdf6d8;
       --on-tertiary-fixed: #453900; --on-tertiary-container: #5b4c00;
-      --error: #b31b25; --error-container: #fb5151; --on-error: #ffefee;
+      --error: #b31b25; --error-container: #e87070; --on-error: #fff4f4;
       --outline: #757778; --outline-variant: #abadae;
-      --inverse-surface: #0c0f10; --inverse-on-surface: #9b9d9e; --inverse-primary: #ff4e7c;
+      --inverse-surface: #0c0f10; --inverse-on-surface: #9b9d9e; --inverse-primary: #ef7090;
       --font-headline: 'Epilogue', sans-serif; --font-body: 'Plus Jakarta Sans', sans-serif;
     }
-    body { background: var(--surface); font-family: var(--font-body); color: var(--on-surface); display: flex; flex-direction: column; min-height: 100vh; background-image: radial-gradient(#000000 1px, transparent 0); background-size: 8px 8px; }
-    .halftone { background-image: radial-gradient(circle, currentColor 1px, transparent 1px); background-size: 8px 8px; }
+    body { background: var(--surface); font-family: var(--font-body); color: var(--on-surface); display: flex; flex-direction: column; min-height: 100vh;  }
+    .halftone {  }
     .kinetic-shadow { box-shadow: 6px 6px 0 0 #000; }
     .neon-stroke { -webkit-text-stroke: 1.5px #000; }
     .stamp-effect { transform: rotate(-12deg); border: 4px double var(--primary); padding: 4px 8px; font-weight: 900; text-transform: uppercase; }
     header { background: #ffffff; width: 100%; border-bottom: 4px solid #000000; position: sticky; top: 0; z-index: 50; }
     .header-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 1rem 2.5rem; }
-    .logo { font-family: 'Epilogue', serif; font-size: 1.875rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #000000; text-shadow: 4px 4px 0px #fdd828; text-decoration: none; flex-shrink: 0; }
+    .logo { font-family: 'Epilogue', serif; font-size: 1.875rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #000000; text-shadow: 4px 4px 0px #e8c84a; text-decoration: none; flex-shrink: 0; }
     .header-left-group { display: flex; align-items: baseline; gap: 3rem; }
     nav { display: flex; gap: 2rem; align-items: center; background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
     nav a { font-family: 'Epilogue', serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.05em; color: #000000; text-decoration: none; transition: color 0.15s, transform 0.15s; white-space: nowrap; }
@@ -90,7 +90,7 @@ $pending_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orde
     .profile-trigger .material-symbols-outlined { color: #000000; font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 48; font-size: 32px; }
     .profile-dropdown { display: none; position: absolute; top: calc(100% + 12px); right: 0; background: #ffffff; border: 4px solid #000000; box-shadow: 8px 8px 0px 0px #000000; min-width: 220px; z-index: 999; transform: rotate(3deg); }
     .profile-dropdown.open { display: block; }
-    .dropdown-user-info { padding: 16px 20px; display: flex; flex-direction: column; gap: 4px; background: var(--primary-container); border-bottom: 4px solid #000; background-image: radial-gradient(#00000018 1px, transparent 0); background-size: 6px 6px; }
+    .dropdown-user-info { padding: 16px 20px; display: flex; flex-direction: column; gap: 4px; background: var(--primary-container); border-bottom: 4px solid #000;  }
     .dropdown-username { font-family: var(--font-headline); font-weight: 900; font-style: italic; font-size: 1.1rem; color: #000000; text-transform: uppercase; letter-spacing: -0.03em; }
     .dropdown-role { font-family: var(--font-body); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(0,0,0,0.6); }
     .dropdown-id { font-family: var(--font-body); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(0,0,0,0.4); }
@@ -134,7 +134,7 @@ $pending_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orde
     .customers-section { background: #fff; border: 4px solid #000; padding: 24px; }
     .customer-list { display: flex; flex-direction: column; gap: 12px; }
     .customer-row { display: flex; justify-content: space-between; align-items: center; background: var(--surface-container); border: 2px solid #000; padding: 16px; transition: background 0.2s; }
-    .customer-row:hover { background: #3ceaee; }
+    .customer-row:hover { background: #8fc8ca; }
     .customer-row.active { background: var(--tertiary-container); border-left: 6px solid var(--primary); }
     .customer-info { display: flex; align-items: center; gap: 16px; }
     .customer-id { font-size: 0.75rem; font-weight: 900; color: var(--on-surface-variant); }
@@ -142,7 +142,7 @@ $pending_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orde
     .customer-amount { font-weight: 900; color: var(--primary); }
     .metrics { display: flex; flex-direction: column; gap: 24px; }
     .metric-card { border: 4px solid #000; padding: 24px; position: relative; overflow: hidden; }
-    .metric-card.teal-card { background: #52f9fc; } .metric-card.yellow-card { background: #fdd828; }
+    .metric-card.teal-card { background: #a8d5d6; } .metric-card.yellow-card { background: #e8c84a; }
     .metric-card .halftone { position: absolute; inset: 0; opacity: 0.2; pointer-events: none; color: #000; }
     .metric-inner { position: relative; z-index: 1; }
     .metric-label { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 700; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; }
@@ -161,7 +161,7 @@ $pending_orders = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM orde
     .hub-btn-right { display: flex; align-items: center; }
     footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
     .footer-brand { display: flex; flex-direction: column; gap: 4px; }
-    .footer-brand-name { font-family: 'Epilogue', sans-serif; font-size: 1.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #fdd828; text-shadow: 3px 3px 0px #000; }
+    .footer-brand-name { font-family: 'Epilogue', sans-serif; font-size: 1.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #e8c84a; text-shadow: 3px 3px 0px #000; }
     .footer-rights { font-family: var(--font-body); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); }
     .footer-links { list-style: none; display: flex; gap: 20px; flex-wrap: wrap; }
     .footer-links li a { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.15s; display: inline-block; }

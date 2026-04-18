@@ -62,20 +62,20 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --primary: #b70048; --primary-container: #ff7290; --on-primary: #ffeff0;
-    --secondary: #006668; --secondary-container: #52f9fc; --on-secondary-fixed: #004749; --on-secondary-container: #005b5d;
-    --tertiary: #6c5a00; --tertiary-container: #fdd828; --on-tertiary-container: #5b4c00;
+    --primary: #b70048; --primary-container: #f4a0b0; --on-primary: #ffeff0;
+    --secondary: #006668; --secondary-container: #a8d5d6; --on-secondary-fixed: #004749; --on-secondary-container: #005b5d;
+    --tertiary: #6c5a00; --tertiary-container: #e8c84a; --on-tertiary-container: #5b4c00;
     --background: #f5f6f7; --surface: #f5f6f7; --on-background: #2c2f30; --on-surface: #2c2f30;
     --surface-container: #e6e8ea; --surface-container-low: #eff1f2; --surface-container-lowest: #fff;
     --surface-container-highest: #dadddf; --on-surface-variant: #595c5d;
-    --outline: #757778; --error: #b31b25; --error-container: #fb5151; --on-error: #ffefee;
+    --outline: #757778; --error: #b31b25; --error-container: #e87070; --on-error: #fff4f4;
     --font-headline: 'Plus Jakarta Sans', 'Epilogue', sans-serif; --font-body: 'Plus Jakarta Sans', sans-serif;
   }
-  body { background: var(--background); color: var(--on-background); font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; display: flex; flex-direction: column; background-image: radial-gradient(#000000 1px, transparent 0); background-size: 8px 8px; }
+  body { background: var(--background); color: var(--on-background); font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; display: flex; flex-direction: column;  }
   .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; font-size: 24px; line-height: 1; vertical-align: middle; user-select: none; display: inline-block; }
   header { background: #fff; width: 100%; border-bottom: 4px solid #000; position: sticky; top: 0; z-index: 50; }
   .header-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 1rem 2.5rem; }
-  .logo { font-family: 'Epilogue', serif; font-size: 1.875rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #000; text-shadow: 4px 4px 0px #fdd828; text-decoration: none; }
+  .logo { font-family: 'Epilogue', serif; font-size: 1.875rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #000; text-shadow: 4px 4px 0px #e8c84a; text-decoration: none; }
   .header-left-group { display: flex; align-items: baseline; gap: 3rem; }
   nav { display: flex; gap: 2rem; align-items: center; }
   nav a { font-family: 'Epilogue', serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.05em; color: #000; text-decoration: none; transition: color 0.15s; white-space: nowrap; }
@@ -123,8 +123,8 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
   .btn-clear { background: #fff; color: #000; border: 4px solid #000; padding: 0.75rem 1rem; font-weight: 700; cursor: pointer; text-decoration: none; font-size: 0.875rem; display: inline-block; }
   .table-wrap { background: #fff; border: 4px solid #000; overflow-x: auto; }
   .section-title { padding: 1.25rem 1.5rem; background: #000; color: #fff; font-family: 'Epilogue', serif; font-weight: 900; font-style: italic; font-size: 1.25rem; text-transform: uppercase; letter-spacing: -0.03em; }
-  .search-wrap input:focus { border-color: #000; box-shadow: 0 0 0 4px #fdd828; }
-  .filter-wrap select:focus { box-shadow: 0 0 0 4px #fdd828; }
+  .search-wrap input:focus { border-color: #000; box-shadow: 0 0 0 4px #e8c84a; }
+  .filter-wrap select:focus { box-shadow: 0 0 0 4px #e8c84a; }
   table { width: 100%; border-collapse: collapse; min-width: 600px; }
   thead tr { background: var(--surface-container-highest); border-bottom: 4px solid #000; }
   thead th { padding: 1rem; text-align: left; font-weight: 900; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
@@ -148,7 +148,7 @@ $total_admins = mysqli_fetch_row(mysqli_query($con, "SELECT COUNT(*) FROM users 
   .no-users { padding: 3rem; text-align: center; font-weight: 700; color: var(--outline); font-style: italic; }
   footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
     .footer-brand { display: flex; flex-direction: column; gap: 4px; }
-    .footer-brand-name { font-family: 'Epilogue', sans-serif; font-size: 1.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #fdd828; text-shadow: 3px 3px 0px #000; }
+    .footer-brand-name { font-family: 'Epilogue', sans-serif; font-size: 1.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #e8c84a; text-shadow: 3px 3px 0px #000; }
     .footer-rights { font-family: var(--font-body); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); }
     .footer-links { list-style: none; display: flex; gap: 20px; flex-wrap: wrap; }
     .footer-links li a { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.15s; display: inline-block; }

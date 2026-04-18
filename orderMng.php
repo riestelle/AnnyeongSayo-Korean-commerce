@@ -108,23 +108,23 @@ function qstr($extras = []) {
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --primary: #b70048; --primary-container: #ff7290; --on-primary: #ffeff0; --primary-dim: #a1003f;
-    --secondary: #006668; --secondary-container: #52f9fc; --on-secondary-container: #005b5d;
-    --tertiary: #6c5a00; --tertiary-container: #fdd828; --on-tertiary-container: #5b4c00;
+    --primary: #b70048; --primary-container: #f4a0b0; --on-primary: #ffeff0; --primary-dim: #a1003f;
+    --secondary: #006668; --secondary-container: #a8d5d6; --on-secondary-container: #005b5d;
+    --tertiary: #6c5a00; --tertiary-container: #e8c84a; --on-tertiary-container: #5b4c00;
     --background: #f5f6f7; --surface: #f5f6f7; --on-background: #2c2f30; --on-surface: #2c2f30;
     --surface-container: #e6e8ea; --surface-container-low: #eff1f2; --surface-container-lowest: #fff;
     --surface-container-highest: #dadddf; --on-surface-variant: #595c5d;
     --outline: #757778; --outline-variant: #abadae;
-    --error: #b31b25; --error-container: #fb5151; --on-error: #ffefee;
+    --error: #b31b25; --error-container: #e87070; --on-error: #fff4f4;
     --font-headline: 'Epilogue', sans-serif; --font-body: 'Plus Jakarta Sans', sans-serif;
   }
-  body { background: var(--background); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--on-background); min-height: 100vh; display: flex; flex-direction: column; background-image: radial-gradient(#000000 1px, transparent 0); background-size: 8px 8px; }
+  body { background: var(--background); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--on-background); min-height: 100vh; display: flex; flex-direction: column;  }
   .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; font-size: 24px; line-height: 1; vertical-align: middle; user-select: none; display:inline-block; }
 
   /* ── Header ── */
   header { background: #fff; width: 100%; border-bottom: 4px solid #000; position: sticky; top: 0; z-index: 50; }
   .header-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 1rem 2.5rem; }
-  .logo { font-family: 'Epilogue', serif; font-size: 1.875rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #000; text-shadow: 4px 4px 0px #fdd828; text-decoration: none; }
+  .logo { font-family: 'Epilogue', serif; font-size: 1.875rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #000; text-shadow: 4px 4px 0px #e8c84a; text-decoration: none; }
   .header-left-group { display: flex; align-items: baseline; gap: 3rem; }
   nav { display: flex; gap: 2rem; align-items: center; }
   nav a { font-family: 'Epilogue', serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.05em; color: #000; text-decoration: none; transition: color 0.15s; white-space: nowrap; }
@@ -175,11 +175,11 @@ function qstr($extras = []) {
   .toolbar { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: flex-end; }
   .search-wrap { position: relative; flex-grow: 1; min-width: 200px; }
   .search-wrap input { width: 100%; background: #fff; border: 4px solid #000; padding: 0.75rem 0.75rem 0.75rem 3rem; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 0.875rem; outline: none; }
-  .search-wrap input:focus { box-shadow: 0 0 0 4px #fdd828; }
+  .search-wrap input:focus { box-shadow: 0 0 0 4px #e8c84a; }
   .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); }
   .filter-wrap { position: relative; min-width: 160px; }
   .filter-wrap select { width: 100%; background: #fff; border: 4px solid #000; padding: 0.75rem 2.5rem 0.75rem 0.75rem; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 0.875rem; appearance: none; cursor: pointer; outline: none; }
-  .filter-wrap select:focus { box-shadow: 0 0 0 4px #fdd828; }
+  .filter-wrap select:focus { box-shadow: 0 0 0 4px #e8c84a; }
   .filter-arrow { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); pointer-events: none; }
   .btn-search { background: #000; color: #fff; border: 4px solid #000; padding: 0.75rem 1.5rem; font-family: 'Epilogue', serif; font-weight: 900; font-size: 0.875rem; text-transform: uppercase; cursor: pointer; white-space: nowrap; }
   .btn-search:hover { background: var(--primary); border-color: var(--primary); }
@@ -242,7 +242,7 @@ function qstr($extras = []) {
   /* ── Footer ── */
   footer { background: #000; border-top: 4px solid #000; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
   .footer-brand { display: flex; flex-direction: column; gap: 4px; }
-  .footer-brand-name { font-family: 'Epilogue', sans-serif; font-size: 1.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #fdd828; }
+  .footer-brand-name { font-family: 'Epilogue', sans-serif; font-size: 1.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #e8c84a; }
   .footer-rights { font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); }
   .footer-links { list-style: none; display: flex; gap: 20px; flex-wrap: wrap; }
   .footer-links li a { font-size: 0.7rem; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.15s; }

@@ -96,17 +96,17 @@ $orders_result = mysqli_query($con, "
     --surface: #f5f6f7; --surface-container-lowest: #ffffff; --surface-container: #e6e8ea;
     --surface-container-low: #eff1f2; --surface-container-highest: #dadddf;
     --on-surface: #2c2f30; --on-surface-variant: #595c5d;
-    --primary: #b70048; --primary-container: #ff7290; --on-primary: #ffeff0;
-    --secondary: #006668; --secondary-container: #52f9fc; --on-secondary-container: #005b5d;
-    --tertiary-container: #fdd828; --on-tertiary-container: #5b4c00;
-    --error: #b31b25; --error-container: #fb5151; --on-error: #ffefee;
+    --primary: #b70048; --primary-container: #f4a0b0; --on-primary: #ffeff0;
+    --secondary: #006668; --secondary-container: #a8d5d6; --on-secondary-container: #005b5d;
+    --tertiary-container: #e8c84a; --on-tertiary-container: #5b4c00;
+    --error: #b31b25; --error-container: #e87070; --on-error: #fff4f4;
     --outline: #757778;
   }
   body { background: var(--surface); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--on-surface); min-height: 100vh; display: flex; flex-direction: column; }
   .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; font-size: 24px; line-height: 1; vertical-align: middle; user-select: none; display: inline-block; }
   header { background: #fff; border-bottom: 4px solid #000; position: sticky; top: 0; z-index: 50; }
   .header-inner { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2.5rem; }
-  .logo { font-family: 'Epilogue', serif; font-size: 1.875rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #000; text-shadow: 4px 4px 0px #fdd828; text-decoration: none; }
+  .logo { font-family: 'Epilogue', serif; font-size: 1.875rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #000; text-shadow: 4px 4px 0px #e8c84a; text-decoration: none; }
   .header-left-group { display: flex; align-items: baseline; gap: 3rem; }
   nav { display: flex; gap: 2rem; }
   nav a { font-family: 'Epilogue', serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.05em; color: #000; text-decoration: none; white-space: nowrap; }

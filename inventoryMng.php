@@ -104,20 +104,20 @@ $categories_result = mysqli_query($con, "SELECT DISTINCT category FROM products 
     --surface: #f5f6f7; --surface-container: #e6e8ea; --surface-container-low: #eff1f2;
     --surface-container-lowest: #ffffff; --surface-container-highest: #dadddf;
     --on-surface: #2c2f30; --on-surface-variant: #595c5d; --on-background: #2c2f30;
-    --primary: #b70048; --primary-dim: #a1003f; --primary-container: #ff7290;
+    --primary: #b70048; --primary-dim: #a1003f; --primary-container: #f4a0b0;
     --on-primary: #ffeff0; --on-primary-container: #4d001a;
-    --secondary: #006668; --secondary-container: #52f9fc; --secondary-fixed: #52f9fc;
+    --secondary: #006668; --secondary-container: #a8d5d6; --secondary-fixed: #a8d5d6;
     --on-secondary-container: #005b5d; --on-secondary-fixed: #004749;
-    --tertiary: #6c5a00; --tertiary-container: #fdd828; --on-tertiary-container: #5b4c00;
-    --error: #b31b25; --error-container: #fb5151; --on-error: #ffefee;
+    --tertiary: #6c5a00; --tertiary-container: #e8c84a; --on-tertiary-container: #5b4c00;
+    --error: #b31b25; --error-container: #e87070; --on-error: #fff4f4;
     --outline: #757778; --outline-variant: #abadae;
     --font-headline: 'Epilogue', sans-serif; --font-body: 'Plus Jakarta Sans', sans-serif;
   }
- body { background-color: var(--surface); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--on-surface); min-height: 100vh; background-image: radial-gradient(#000000 1px, transparent 0); background-size: 8px 8px; }
+ body { background-color: var(--surface); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--on-surface); min-height: 100vh;  }
   /* Header */
   header { background: #ffffff; width: 100%; border-bottom: 4px solid #000000; position: sticky; top: 0; z-index: 50; }
   .header-inner { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 1rem 2.5rem; }
-  .logo { font-family: 'Epilogue', serif; font-size: 1.875rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #000000; text-shadow: 4px 4px 0px #fdd828; text-decoration: none; flex-shrink: 0; }
+  .logo { font-family: 'Epilogue', serif; font-size: 1.875rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #000000; text-shadow: 4px 4px 0px #e8c84a; text-decoration: none; flex-shrink: 0; }
   .header-left-group { display: flex; align-items: baseline; gap: 3rem; }
   nav { display: flex; gap: 2rem; align-items: center; background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
   nav a { font-family: 'Epilogue', serif; font-weight: 900; text-transform: uppercase; letter-spacing: -0.05em; color: #000000; text-decoration: none; transition: color 0.15s, transform 0.15s; white-space: nowrap; }
@@ -207,7 +207,7 @@ $categories_result = mysqli_query($con, "SELECT DISTINCT category FROM products 
   /* Footer */
   footer { background: #000000; border-top: 4px solid #000000; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
     .footer-brand { display: flex; flex-direction: column; gap: 4px; }
-    .footer-brand-name { font-family: 'Epilogue', sans-serif; font-size: 1.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #fdd828; text-shadow: 3px 3px 0px #000; }
+    .footer-brand-name { font-family: 'Epilogue', sans-serif; font-size: 1.5rem; font-weight: 900; font-style: italic; letter-spacing: -0.05em; color: #e8c84a; text-shadow: 3px 3px 0px #000; }
     .footer-rights { font-family: var(--font-body); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); }
     .footer-links { list-style: none; display: flex; gap: 20px; flex-wrap: wrap; }
     .footer-links li a { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.15s; display: inline-block; }

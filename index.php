@@ -210,8 +210,8 @@ main {
   position: absolute;
   inset: 0;
   background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
-  background-size: 8px 8px;
-  opacity: 0.04;
+  background-size: 6px 6px;
+  opacity: 0.1;
   pointer-events: none;
   color: white;
 }
@@ -380,6 +380,8 @@ main {
   position: relative;
   overflow: hidden;
 }
+
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 .card-halftone {
   position: absolute;
@@ -672,7 +674,7 @@ main {
 }
 .modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
 
-.modal-crosssell { margin-top: 3rem; border-top: 4px solid #000; padding-top: 2rem; }
+.modal-crosssell { margin-top: 3rem; border-top: 4px solid #000; padding-top: 2rem; background: #fff; }
 .modal-crosssell-title {
   font-family: 'Epilogue', sans-serif;
   font-size: 1.5rem;
@@ -681,6 +683,9 @@ main {
   font-style: italic;
   letter-spacing: -0.05em;
   -webkit-text-stroke: 1.5px #000;
+  background: #fff;
+  display: inline-block;
+  padding: 0 0.4rem;
   margin-bottom: 0.5rem;
 }
 .modal-crosssell-underline {
@@ -1040,7 +1045,7 @@ main {
       </nav>
     </div>
     <div style="display: flex; align-items: center; gap: 0.75rem;">
-      <a href="wishlistCart.php" class="profile-trigger" style="background-color: #00595b;">
+      <a href="<?php echo $user_id ? 'wishlistCart.php' : 'login_register.php?form=login'; ?>" class="profile-trigger" style="background-color: #00595b;">
         <span class="material-symbols-outlined" style="color: #ffffff;">shopping_cart</span>
       </a>
       <div class="profile-trigger-wrap">
@@ -1051,13 +1056,20 @@ main {
           <div class="dropdown-user-info">
             <span class="dropdown-username"><?php echo htmlspecialchars($username); ?></span>
             <span class="dropdown-role"><?php echo htmlspecialchars($role); ?></span>
-            <span class="dropdown-id">#<?php echo htmlspecialchars($user_id); ?></span>
+            <?php if ($user_id): ?><span class="dropdown-id">#<?php echo htmlspecialchars($user_id); ?></span><?php endif; ?>
           </div>
           <div class="dropdown-divider"></div>
+          <?php if ($user_id): ?>
           <a href="includes/logout.php" class="dropdown-logout">
             <span class="material-symbols-outlined">logout</span>
             Log Out
           </a>
+          <?php else: ?>
+          <a href="login_register.php?form=login" class="dropdown-logout">
+            <span class="material-symbols-outlined">login</span>
+            Login / Register
+          </a>
+          <?php endif; ?>
         </div>
       </div>
     </div>
@@ -1123,20 +1135,12 @@ main {
         $sku        = htmlspecialchars($product['sku']      ?? '—');
         $pid        = (int) $product['product_id'];
     ?>
-    <div class="card <?= $style ?>" data-product-id="<?= $pid ?>" data-category="<?= htmlspecialchars($product['category']) ?>" data-name="<?= strtolower(htmlspecialchars($product['name'])) ?>">
+    <div class="card <?= $style ?>" style="cursor:default;"
+      data-product-id="<?= $pid ?>"
+      data-category="<?= htmlspecialchars($product['category']) ?>"
+      data-name="<?= strtolower(htmlspecialchars($product['name'])) ?>">
       <div class="card-halftone"></div>
-      <div class="card-img-wrap">
-        <img alt="<?= $name ?>" src="<?= $img_url ?>"/>
-        <span class="<?= $badge_class ?>"><?= $badge ?></span>
-      </div>
-      <div class="card-footer">
-        <div>
-          <h3 class="card-title"><?= $name ?></h3>
-          <p class="card-subtitle"><?= $subtitle ?></p>
-        </div>
-        <div class="price-tag-sm"><?= $price ?></div>
-      </div>
-      <button class="btn-primary btn-full view-details-btn" style="width:100%;"
+      <div class="card-img-wrap view-details-btn" style="cursor:pointer;"
         data-pid="<?= $pid ?>"
         data-name="<?= htmlspecialchars($name, ENT_QUOTES) ?>"
         data-price="<?= htmlspecialchars('₱' . number_format((float)$product['price'], 2), ENT_QUOTES) ?>"
@@ -1148,7 +1152,30 @@ main {
         data-stock="<?= htmlspecialchars((string)$stock, ENT_QUOTES) ?>"
         data-rating="<?= htmlspecialchars($rating, ENT_QUOTES) ?>"
         data-sku="<?= htmlspecialchars($sku, ENT_QUOTES) ?>">
-        <span class="material-symbols-outlined">visibility</span> VIEW DETAILS
+        <img alt="<?= $name ?>" src="<?= $img_url ?>"/>
+        <span class="<?= $badge_class ?>"><?= $badge ?></span>
+      </div>
+      <div class="card-footer view-details-btn" style="cursor:pointer;"
+        data-pid="<?= $pid ?>"
+        data-name="<?= htmlspecialchars($name, ENT_QUOTES) ?>"
+        data-price="<?= htmlspecialchars('₱' . number_format((float)$product['price'], 2), ENT_QUOTES) ?>"
+        data-img="<?= htmlspecialchars($product['image_url'], ENT_QUOTES) ?>"
+        data-desc="<?= htmlspecialchars($subtitle, ENT_QUOTES) ?>"
+        data-badge="<?= htmlspecialchars($badge, ENT_QUOTES) ?>"
+        data-sticker="<?= htmlspecialchars(strtoupper($badge), ENT_QUOTES) ?>"
+        data-cat="<?= htmlspecialchars($category, ENT_QUOTES) ?>"
+        data-stock="<?= htmlspecialchars((string)$stock, ENT_QUOTES) ?>"
+        data-rating="<?= htmlspecialchars($rating, ENT_QUOTES) ?>"
+        data-sku="<?= htmlspecialchars($sku, ENT_QUOTES) ?>">
+        <div>
+          <h3 class="card-title"><?= $name ?></h3>
+          <p class="card-subtitle"><?= $subtitle ?></p>
+        </div>
+        <div class="price-tag-sm"><?= $price ?></div>
+      </div>
+      <button class="btn-primary btn-full card-add-btn" style="width:100%;"
+        data-pid="<?= $pid ?>">
+        <span class="material-symbols-outlined">shopping_cart</span> ADD TO CART
       </button>
     </div>
     <?php
@@ -1162,14 +1189,13 @@ main {
   </section>
 </main>
 
-<!-- Hidden forms for cart/checkout (avoids fetch() AJAX issues on InfinityFree) -->
+<!-- Hidden form for direct checkout (buy now — bypasses wishlist) -->
 <form id="form-add-cart" method="POST" action="includes/add_to_wishlist_redirect.php" style="display:none;">
   <input type="hidden" name="product_id" id="form-cart-pid">
   <input type="hidden" name="redirect" value="wishlistCart.php">
 </form>
-<form id="form-checkout" method="POST" action="includes/add_to_wishlist_redirect.php" style="display:none;">
+<form id="form-checkout" method="POST" action="includes/buy_now.php" style="display:none;">
   <input type="hidden" name="product_id" id="form-checkout-pid">
-  <input type="hidden" name="redirect" value="checkout.php">
 </form>
 
 <!--product details modal pop-up-->
@@ -1318,12 +1344,43 @@ main {
     }
   });
 
-  // VIEW DETAILS — event delegation
+  // CARD CLICK — open modal (data-* now on the card div itself)
   document.addEventListener('click', function(e) {
     var btn = e.target.closest('.view-details-btn');
     if (!btn) return;
     var d = btn.dataset;
     openModal(d.pid, d.name, d.price, d.img, d.desc, d.badge, d.sticker, d.cat, d.stock, d.rating, d.sku);
+  });
+
+  // ADD TO CART button — direct add without opening modal
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.card-add-btn');
+    if (!btn) return;
+    e.stopPropagation();
+    if (!isLoggedIn) { window.location.href = 'login_register.php?form=login'; return; }
+    var productId = btn.dataset.pid;
+    var originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 0.6s linear infinite;">sync</span> ADDING...';
+    fetch('includes/add_to_wishlist.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product_id: parseInt(productId) })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (data.success) {
+        btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> ADDED!';
+        btn.style.background = '#00595b';
+        btn.style.color = '#fff';
+        setTimeout(function(){ btn.innerHTML = originalHTML; btn.style.background = ''; btn.style.color = ''; btn.disabled = false; }, 2000);
+        showToast('<span class="material-symbols-outlined" style="font-size:1.2rem;">check_circle</span> Added! <a href="wishlistCart.php" style="margin-left:0.5rem;text-decoration:underline;color:inherit;">View Cart →</a>');
+      } else {
+        btn.innerHTML = originalHTML; btn.disabled = false;
+        showToast('<span class="material-symbols-outlined" style="font-size:1.2rem;">error</span> ' + (data.message || 'Failed'), true);
+      }
+    })
+    .catch(function(){ btn.innerHTML = originalHTML; btn.disabled = false; showToast('Network error', true); });
   });
 
   function openModal(productId, title, price, img, desc, badge, sticker, cat, stock, rating, sku) {
@@ -1414,16 +1471,50 @@ main {
     if (e.target === this) closeModal();
   });
 
-  // Add to cart (wishlist)
+  var isLoggedIn = <?php echo $user_id ? 'true' : 'false'; ?>;
+
+  // Toast notification
+  function showToast(msg, isError) {
+    var t = document.getElementById('cart-toast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'cart-toast';
+      t.style.cssText = 'position:fixed;bottom:2rem;right:2rem;z-index:9999;padding:1rem 1.5rem;font-family:var(--font-headline);font-weight:900;font-style:italic;font-size:0.95rem;text-transform:uppercase;border:3px solid #000;box-shadow:5px 5px 0 #000;transition:opacity 0.3s;background:var(--primary);color:#000;display:flex;align-items:center;gap:0.75rem;';
+      document.body.appendChild(t);
+    }
+    t.style.background = isError ? '#ff4444' : 'var(--primary)';
+    t.style.color = isError ? '#fff' : '#000';
+    t.innerHTML = msg;
+    t.style.opacity = '1';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function(){ t.style.opacity = '0'; }, 3000);
+  }
+
+  // Add to cart (AJAX — no redirect)
   function handleAddToCart() {
+    if (!isLoggedIn) { window.location.href = 'login_register.php?form=login'; return; }
     var productId = document.getElementById('productModal').dataset.productId;
     if (!productId) return;
-    document.getElementById('form-cart-pid').value = productId;
-    document.getElementById('form-add-cart').submit();
+
+    fetch('includes/add_to_wishlist.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product_id: parseInt(productId) })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (data.success) {
+        showToast('<span class="material-symbols-outlined" style="font-size:1.2rem;">check_circle</span> Added! <a href="wishlistCart.php" style="margin-left:0.5rem;text-decoration:underline;color:inherit;">View Cart →</a>');
+      } else {
+        showToast('<span class="material-symbols-outlined" style="font-size:1.2rem;">error</span> ' + (data.message || 'Failed'), true);
+      }
+    })
+    .catch(function(){ showToast('Network error', true); });
   }
 
   // Checkout — add to cart then redirect
   function handleCheckout() {
+    if (!isLoggedIn) { window.location.href = 'login_register.php?form=login'; return; }
     var productId = document.getElementById('productModal').dataset.productId;
     if (!productId) return;
     document.getElementById('form-checkout-pid').value = productId;

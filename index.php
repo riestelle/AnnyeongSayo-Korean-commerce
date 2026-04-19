@@ -12,11 +12,25 @@ unset($_SESSION['just_logged_in']);
 
 // Fetch all products from DB
 $products = [];
-$stmt = $con->prepare("SELECT id as product_id, name, description as subtitle, price, image_url, category, stock_quantity as stock, barcode as sku FROM products ORDER BY created_at DESC");
+$stmt = $con->prepare("SELECT id as product_id, name, description as subtitle, price, image_url, category, stock_quantity as stock, barcode as sku, created_at FROM products ORDER BY created_at DESC");
 $stmt->execute();
 $result = $stmt->get_result();
 while ($row = $result->fetch_assoc()) { $products[] = $row; }
 $stmt->close();
+
+// Assign 'NEW' badge only to the first 5 products added within the last 3 days
+$new_badge_count = 0;
+$three_days_ago = strtotime('-3 days');
+foreach ($products as &$product) {
+    $created_ts = strtotime($product['created_at']);
+    if ($new_badge_count < 5 && $created_ts >= $three_days_ago) {
+        $product['badge'] = 'NEW';
+        $new_badge_count++;
+    } else {
+        $product['badge'] = '';
+    }
+}
+unset($product);
 ?>
 <!DOCTYPE html>
 <html class="light" lang="en">
@@ -602,16 +616,22 @@ main {
   align-items: flex-start;
   gap: 0.5rem;
   margin-top: 0.75rem;
+  flex: 1;
 }
 
 .card-standard-sq .card-footer > div:first-child {
   width: 100%;
+  flex: 1;
+}
+
+.card-standard-sq .card-footer .price-tag-sm {
+  margin-top: auto;
 }
 
 .card-standard-sq .btn-primary {
   width: 100%;
   justify-content: center;
-  margin-top: 1rem;
+  margin-top: 0.75rem;
   padding: 0.6rem 1rem;
   font-size: 0.95rem;
 }
@@ -651,12 +671,7 @@ main {
   flex-shrink: 0;
 }
 
-.card-standard-sq .card-footer {
-  align-items: flex-start;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-}
+/* card-standard-sq card-footer consolidated above */
 
 .card-secondary { background-color: var(--secondary-container); }
 .card-primary-c { background-color: var(--primary-container); }
@@ -1127,7 +1142,7 @@ main {
         $name       = htmlspecialchars($product['name']);
         $subtitle   = htmlspecialchars($product['subtitle'] ?? '');
         $price      = '₱' . number_format((float)$product['price'], 2);
-        $badge      = htmlspecialchars($product['badge'] ?? 'NEW');
+        $badge      = htmlspecialchars($product['badge'] ?? '');
         $badge_class = (strtolower($badge) === 'ultra rare') ? 'card-badge-rare' : 'card-badge-new';
         $category   = htmlspecialchars($product['category'] ?? '—');
         $stock      = htmlspecialchars($product['stock']    ?? '—');
@@ -1153,7 +1168,7 @@ main {
         data-rating="<?= htmlspecialchars($rating, ENT_QUOTES) ?>"
         data-sku="<?= htmlspecialchars($sku, ENT_QUOTES) ?>">
         <img alt="<?= $name ?>" src="<?= $img_url ?>"/>
-        <span class="<?= $badge_class ?>"><?= $badge ?></span>
+        <?php if ($badge): ?><span class="<?= $badge_class ?>"><?= $badge ?></span><?php endif; ?>
       </div>
       <div class="card-footer view-details-btn" style="cursor:pointer;"
         data-pid="<?= $pid ?>"
@@ -1172,11 +1187,11 @@ main {
           <p class="card-subtitle"><?= $subtitle ?></p>
         </div>
         <div class="price-tag-sm"><?= $price ?></div>
+        <button class="btn-primary btn-full card-add-btn" style="width:100%;margin-top:0;"
+          data-pid="<?= $pid ?>">
+          <span class="material-symbols-outlined">shopping_cart</span> ADD TO CART
+        </button>
       </div>
-      <button class="btn-primary btn-full card-add-btn" style="width:100%;"
-        data-pid="<?= $pid ?>">
-        <span class="material-symbols-outlined">shopping_cart</span> ADD TO CART
-      </button>
     </div>
     <?php
       endforeach;

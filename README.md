@@ -20,10 +20,12 @@ An integrated commerce platform that combines:
 
 ## Getting Started
 1. Clone the repository:
+```
 git clone https://github.com/riestelle/AnnyeongSayo-Korean-commerce.git
-2. Set up your local PHP/MySQL environment.
-3. Import the provided database schema (`korean_store`).
-4. Run the project locally or deploy to your preferred hosting.
+```
+3. Set up your local PHP/MySQL environment.
+4. Import the provided database schema (`korean_store`).
+5. Run the project locally or deploy to your preferred hosting.
 
 ## Project Scope
 This is more than a simple demo shop — it’s a **full commerce system** showcasing:
